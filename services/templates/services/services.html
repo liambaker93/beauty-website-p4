@@ -2,5 +2,16 @@
 
 {% block content %}
 <h1>Services page</h1>
+<div class="container">
+    <div class="row">
+        {% for service in services %}
+        <div class="col">
+            <h2>{{ service.category }} : {{ service.name }}</h2>
+            <p>{{ service.description }}</p>
+            <p>£{{ service.price }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock %}
