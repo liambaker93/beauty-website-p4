@@ -1,6 +1,4 @@
 {% extends 'base.html' %}
-
-
 {% block content %}
 <!--Hero Image-->
 
@@ -12,10 +10,7 @@
             <p>Here we have so much information</p>
         </div>
         <div class="col-4">
-            <div class="row border h-100">
-                <h2>Highlights</h2>
-                <p>Here are some highlighted services:</p>
-            </div>
+            {% include 'home/random_service.html' %}
             <div class="row border h-100">
                 <h2>Sign up for an account!</h2>
                 <p>Get some loyalty rewards</p>

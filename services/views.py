@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import ServiceCategory, ServicesList
+import random
 
 # Create your views here.
 
