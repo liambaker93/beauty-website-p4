@@ -133,8 +133,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Microsoft azure links for calendar
 
-MS_CLIENT_ID = os.environ.get('AZURE_CLIENT_ID')
-MS_CLIENT_SECRET = os.environ.get('AZURE_CLIENT_SECRET')
-MS_TENANT_ID = os.environ.get('AZURE_TENANT_ID')
-MS_REDIRECT_URI = 'http://localhost:8000/'
+MS_CLIENT_ID = os.getenv('AZURE_CLIENT_ID')
+MS_CLIENT_SECRET = os.getenv('AZURE_CLIENT_SECRET')
+MS_TENANT_ID = os.getenv('AZURE_TENANT_ID')
+MS_REDIRECT_URI = 'http://localhost:8000/callback/'
 MS_SCOPES = ['Calendars.ReadWrite']
