@@ -1,4 +1,8 @@
 {% load static %}
+{% url 'about' as about_url %}
+{% url 'account_login' as login_url %}
+{% url 'account_signup' as signup_url %}
+{% url 'account_logout' as logout_url %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -39,16 +43,24 @@
           <a class="nav-link" href="{% url 'services' %}">Services</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'account' %}">Account</a>
+          <a class="nav-link" href="#">Account</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'contact' %}">Contact</a>
         </li>
-        <span>
-        <li class="nav-item d-flex">
-            <a class="nav-link" href="#">Sign Up</a>
+        {% if user.is_authenticated %}
+        <!--If the user is logged in then site will show logout button-->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
         </li>
-        </span>
+        {% else %}
+        <li class="nav-item d-flex">
+            <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
+        </li>
+        <li class="nav-item d-flex">
+            <a class="nav-link" href="{% url 'account_login' %}">Log In</a>
+        </li>
+        {% endif %}
       </ul>
     </div>
   </div>
