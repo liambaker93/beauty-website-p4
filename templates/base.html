@@ -48,6 +48,11 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'contact' %}">Contact</a>
         </li>
+        {% if user.is_superuser %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'appointments' %}">Appointments</a>
+        </li>
+        {% endif %}
         {% if user.is_authenticated %}
         <!--If the user is logged in then site will show logout button-->
         <li class="nav-item">
