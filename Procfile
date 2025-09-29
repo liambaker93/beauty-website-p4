@@ -1,0 +1,1 @@
+web: gunicorn beauty_website_p4.wsgi
