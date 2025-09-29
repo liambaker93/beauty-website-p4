@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'services',
     'account',
     'contact',
+    'appointments',
 ]
 
 MIDDLEWARE = [
@@ -136,5 +137,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MS_CLIENT_ID = os.getenv('AZURE_CLIENT_ID')
 MS_CLIENT_SECRET = os.getenv('AZURE_CLIENT_SECRET')
 MS_TENANT_ID = os.getenv('AZURE_TENANT_ID')
-MS_REDIRECT_URI = 'http://localhost:8000/callback/'
+MS_REDIRECT_URI = 'http://127.0.0.1:8000/callback/'
 MS_SCOPES = ['Calendars.ReadWrite']

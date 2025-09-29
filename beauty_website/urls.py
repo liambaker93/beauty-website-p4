@@ -23,5 +23,6 @@ urlpatterns = [
     path('services/', include("services.urls"), name="services_urls"),
     path('account/', include("account.urls"), name="account_urls"),
     path('contact/', include("contact.urls"), name="contact_urls"),
+    path('appointments/', include("appointments.urls"), name="appointments_urls"),
 ]
     
