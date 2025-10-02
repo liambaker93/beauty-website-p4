@@ -1,4 +1,4 @@
-body {
-    background-color: black;
-    color: white;
+.home-box {
+    max-height: fit-content;
+    margin-bottom: 15px;
 }
