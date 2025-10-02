@@ -46,3 +46,31 @@ def addNewService(request):
     }
 
     return render(request, template, context)
+
+
+def addNewCategory(request):
+    """
+    Ability for admin user to add a new category to the site from within the webpage
+    instead of via the admin page
+    """
+    if not request.user.is_superuser:
+        messages.error(request, "Sorry, only the store owner can do that!")
+        return redirect(reverse(request, 'home'))
+    
+    if request.method == 'POST':
+        form = ServiceCategoryForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Successfully added category!")
+            return redirect(reverse('services'))
+        else:
+            messages.error(request, "Adding category failed. Please ensure the form is valid.")
+    else:
+        form = ServiceCategoryForm()
+    
+    template = 'services/add_category.html'
+    context = {
+        'form': form,
+    }
+
+    return render(request, template, context)

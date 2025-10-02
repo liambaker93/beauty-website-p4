@@ -3,16 +3,16 @@
 {% block content %}
 <div>
     <h1>Add a new service</h1>
-    <form method="POST" action="{% url 'add_new_service' %}" class="form mb-2" enctype="multipart/form-data">
+    <form method="POST" action="{% url 'add_new_category' %}" class="form mb-2" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <div>
             <a class="btn btn-outline-black" href="{% url 'services' %}">Cancel</a>
-            <button class="btn btn-black" type="submit">Add Service</button>
+            <button class="btn btn-black" type="submit">Add Category</button>
         </div>
     </form>
 </div>
 <div>
-    <a class="btn" href="{% url 'add_new_category' %}">Need a new category?</a>
+    <a class="btn" href="{% url 'add_new_service' %}">Need a new service?</a>
 </div>
 {% endblock %}
