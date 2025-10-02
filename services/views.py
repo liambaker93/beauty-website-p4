@@ -27,14 +27,14 @@ def addNewService(request):
     """
     if not request.user.is_superuser:
         messages.error(request, "Sorry, only the store owner can do that!")
-        return redirect(reverse(request, 'home'))
+        return redirect(reverse('services'))
     
     if request.method == 'POST':
         form = ServiceForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, "Successfully added service!")
-            return redirect(reverse('services'))
+            return redirect(reverse('home'))
         else:
             messages.error(request, "Adding service failed. Please ensure the form is valid.")
     else:
@@ -55,7 +55,7 @@ def addNewCategory(request):
     """
     if not request.user.is_superuser:
         messages.error(request, "Sorry, only the store owner can do that!")
-        return redirect(reverse(request, 'home'))
+        return redirect(reverse('home'))
     
     if request.method == 'POST':
         form = ServiceCategoryForm(request.POST, request.FILES)
