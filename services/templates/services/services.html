@@ -14,6 +14,11 @@ Services
             <button class="btn btn-primary" href="#">Book Now</button>
         </div>
         {% endfor %}
+        {% if user.is_superuser %}
+        <div class="col">
+            <a class="btn btn-outline-black" href="{% url 'add_new_service' %}">Add a new service</a>
+        </div>
+        {% endif %}
     </div>
 </div>
 

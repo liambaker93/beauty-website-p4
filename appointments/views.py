@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Appointments
 
@@ -31,7 +31,17 @@ def addService(request, service_id):
     orders = request.session.get('orders', {})
 
     if service_id not in list(orders.keys()):
-        orders[service_id]
-        messages.success(request, f"")
+        orders[service_id] = {
+            'service': service.name,
+            'price': service.deposit_cost,
+            'date': service.appointment_date,
+            'time': service.appointment_time,
+        }
+        messages.success(request, f"Added {service.name}")
     else:
-        orders[service_id]
+        messages.info(request, f"{service.name} is already in your order.")
+
+    request.session['orders'] = orders
+    request.session.modified = True
+
+    return redirect(redirect_url)

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div>
+    <form method="POST" action="{% url 'add_new_service' %}" class="form mb-2" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div>
+            <a class="btn btn-outline-black" href="{% url 'services' %}">Cancel</a>
+            <button class="btn btn-black" type="submit">Add Products</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
