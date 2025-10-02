@@ -10,6 +10,7 @@ Services
         <div class="col">
             <h2>{{ service.category }} : {{ service.name }}</h2>
             <p>{{ service.description }}</p>
+            <p>{{ service.get_friendly_timeframe }}</p>
             <p>£{{ service.price }}</p>
             <button class="btn btn-primary" href="#">Book Now</button>
         </div>

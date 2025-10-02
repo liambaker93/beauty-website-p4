@@ -30,3 +30,13 @@ class ServicesList(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def get_friendly_timeframe(self):
+        """
+        Returns the timeframe as a friendly string
+        """
+        total_minutes = int(self.timeframe.total_seconds() // 60)
+
+        if total_minutes == 1:
+            return "1 minute"
+        return f"{total_minutes} minutes"
