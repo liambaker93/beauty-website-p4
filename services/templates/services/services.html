@@ -13,7 +13,10 @@ Services
             <p>{{ service.get_friendly_timeframe }}</p>
             <p>£{{ service.price }}</p>
             <button class="btn btn-primary" href="#">Book Now</button>
+        {% if user.is_superuser %}
+           
         </div>
+        {% endif %}
         {% endfor %}
         {% if user.is_superuser %}
         <div class="col">

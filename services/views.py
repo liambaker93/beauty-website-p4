@@ -25,6 +25,7 @@ def addNewService(request):
     Ability for admin user to add a new service to the site from within the webpage
     instead of via the admin page.
     """
+    ## add blank space validation
     if not request.user.is_superuser:
         messages.error(request, "Sorry, only the store owner can do that!")
         return redirect(reverse('services'))
@@ -43,6 +44,35 @@ def addNewService(request):
     template = 'services/add_service.html'
     context = {
         'form': form,
+    }
+
+    return render(request, template, context)
+
+
+def editService(request, service_id):
+    """
+    Ability for the admin user to edit services on the website
+    """
+    if not request.user.is_superuser:
+        messages.error(request, "Sorry, only the store owner can do that!")
+        return redirect(reverse('services'))
+    service = get_object_or_404(ServicesList)
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, request.FILES, instance=service)
+        if form.is_valid:
+            form.save()
+            messages.success(request, "Successfully updated service!")
+            return redirect(reverse('services'))
+        else:
+            messages.error(request, "Failed to update service. Please ensure the form is valid.")
+    else:
+        form = ServiceForm(instance=service)
+        messages.info(request, f"You are editing {service.name}")
+
+    template = 'services/edit_service.html'
+    context = {
+        'form': form,
+        'service': service,
     }
 
     return render(request, template, context)
