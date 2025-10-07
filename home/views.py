@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.conf import settings
-from msal import ConfidentialClientApplication
 import random, requests
 from services.models import ServicesList
 

@@ -7,7 +7,7 @@ import uuid
 
 class Appointments(models.Model):
 
-    name = models.ForeignKey(ServicesList, on_delete=models.CASCADE, related_name='Treatment')
+    name = models.ForeignKey(ServicesList, on_delete=models.CASCADE)
     appointment_time = models.TimeField(blank=False, null=False)
     appointment_date = models.DateField(blank=False, null=False)
     booking_time = models.DateTimeField(auto_now_add=True)

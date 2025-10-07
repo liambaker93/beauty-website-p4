@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block extra_title %}
 Services
 {% endblock %}
@@ -15,6 +16,7 @@ Services
             <button class="btn btn-primary" href="#">Book Now</button>
         {% if user.is_superuser %}
             <a class="btn btn-secondary" href="{% url 'edit_service' service.name %}">Edit Service</a>
+            <a class="btn btn-danger" href="{% url 'delete_service' service_id %}">Delete Service</a>
            
         </div>
         {% endif %}

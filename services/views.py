@@ -1,5 +1,7 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.contrib import messages
+from django.db.models import Q
+from django.db.models.functions import Lower
 from .models import ServiceCategory, ServicesList
 from .forms import ServiceForm, ServiceCategoryForm
 
@@ -9,13 +11,52 @@ from .forms import ServiceForm, ServiceCategoryForm
 def services(request):
     """
     A list of the services offered.
+    Includes sorting and search queries
     """
     services = ServicesList.objects.all()
-    categories = ServiceCategory.objects.all()
+    categories = None
+
+    query = None
+    sort = None
+    direction = None
+
+    if request.GET:
+        if 'sort' in request.GET:
+            sortkey = request.GET['sort']
+            sort = sortkey
+            if sortkey == 'name':
+                sortkey = 'lower_name'
+                services = services.annotate(lower_name=Lower('name'))
+            if sortkey == 'category':
+                sortkey = 'category__name'
+            
+            if 'direction' in request.GET:
+                direction = request.GET['direction']
+                if direction == 'desc':
+                    sortkey = f'-{sortkey}'
+            services = services.order_by(sortkey)
+        
+        if 'category' in request.GET:
+            categories = request.GET['category'].split(',')
+            services = services.filter(category__name__in=categories)
+            categories = ServiceCategory.objects.filter(name__in=categories)
+        
+        if 'q' in request.GET:
+            query = request.GET['q']
+            if not query:
+                messages.error(request, "You didn't enter any search criteria!")
+                return redirect(reverse('services'))
+            queries = Q(name__icontains=query) | Q(description__icontains=query)
+            services = services.filter(queries)
+    
+    current_sort = f"{sort}_{direction}"
 
     context = {
         'services': services,
-        'categories': categories,
+        'search_term': query,
+        'current_categories': categories,
+        'current_sort': current_sort
+
     }
     return render(request, 'services/services.html', context)
 
@@ -77,6 +118,19 @@ def editService(request, service_name):
 
     return render(request, template, context)
 
+
+def deleteService(request, service_id):
+    """
+    Ability for the admin user to edit services on the website
+    """
+    if not request.user.is_superuser:
+        messages.error(request, "Sorry, only the store owner can do that!")
+        return redirect(reverse(request, 'services'))
+    serviceid = service_id
+    service = get_object_or_404(ServicesList, serviceid)
+    service.delete()
+    messages.success(request, 'Service Deleted!')
+    return redirect(reverse('services'))
 
 def addNewCategory(request):
     """
