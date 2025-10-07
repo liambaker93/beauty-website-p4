@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
         slotDuration: '00:45:00',
         slotMinTime: '08:00:00',
         slotMaxTime: '18:00:00',
+        selectable: 'true',
     });
     calendar.render();
 });

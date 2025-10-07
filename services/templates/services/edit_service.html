@@ -2,13 +2,13 @@
 {% load static %}
 {% block content %}
 <div>
-    <h1>Add a new service</h1>
-    <form method="POST" action="{% url 'add_new_service' %}" class="form mb-2" enctype="multipart/form-data">
+    <h1>Editing: {{ service.name }}</h1>
+    <form method="POST" action="{% url 'edit_service' service.name %}" class="form mb-2" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <div>
             <a class="btn btn-outline-black" href="{% url 'services' %}">Cancel</a>
-            <button class="btn btn-black" type="submit">Add Service</button>
+            <button class="btn btn-black" type="submit">Edit</button>
         </div>
     </form>
 </div>

@@ -34,6 +34,7 @@ class ServicesList(models.Model):
     def get_friendly_timeframe(self):
         """
         Returns the timeframe as a friendly string
+        Rather than '00:45:00', will display as '45 minutes'
         """
         total_minutes = int(self.timeframe.total_seconds() // 60)
 

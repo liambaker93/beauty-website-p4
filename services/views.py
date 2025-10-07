@@ -49,14 +49,14 @@ def addNewService(request):
     return render(request, template, context)
 
 
-def editService(request, service_id):
+def editService(request, service_name):
     """
     Ability for the admin user to edit services on the website
     """
     if not request.user.is_superuser:
         messages.error(request, "Sorry, only the store owner can do that!")
         return redirect(reverse('services'))
-    service = get_object_or_404(ServicesList)
+    service = get_object_or_404(ServicesList, pk=service_name)
     if request.method == 'POST':
         form = ServiceForm(request.POST, request.FILES, instance=service)
         if form.is_valid:

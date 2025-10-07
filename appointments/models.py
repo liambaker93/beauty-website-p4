@@ -1,7 +1,7 @@
 from django.db import models
 from services.models import ServicesList
 from django.contrib.auth.models import User
-
+import uuid
 # Create your models here.
 
 
@@ -16,3 +16,4 @@ class Appointments(models.Model):
     user_email = models.EmailField(max_length=254, null=False, blank=True)
     user_phone = models.IntegerField(null=False, default=0, blank=False)
     deposit_cost = models.DecimalField(max_digits=6, decimal_places=2, null=False, default=0)
+    booking_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

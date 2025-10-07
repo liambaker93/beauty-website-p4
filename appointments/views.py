@@ -7,6 +7,11 @@ from .models import Appointments
 
 def appointmentsPage(request):
 
+    ## Random code string generated for booking id to feed into HTML template and JS function
+    
+    booking_id = get_object_or_404(Appointments.booking_id)
+    
+
     return render(request, 'appointments/appointments.html')
 
 
