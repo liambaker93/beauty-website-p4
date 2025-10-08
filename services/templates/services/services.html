@@ -16,7 +16,7 @@ Services
             <button class="btn btn-primary" href="#">Book Now</button>
         {% if user.is_superuser %}
             <a class="btn btn-secondary" href="{% url 'edit_service' service.name %}">Edit Service</a>
-            <a class="btn btn-danger" href="{% url 'delete_service' service_id %}">Delete Service</a>
+            <a class="btn btn-danger" href="{% url 'delete_service' service.name %}">Delete Service</a>
            
         </div>
         {% endif %}
