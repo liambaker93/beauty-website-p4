@@ -15,8 +15,8 @@ Services
             <p>£{{ service.price }}</p>
             <button class="btn btn-primary" href="#">Book Now</button>
         {% if user.is_superuser %}
-            <a class="btn btn-secondary" href="{% url 'edit_service' service.name %}">Edit Service</a>
-            <a class="btn btn-danger" href="{% url 'delete_service' service.name %}">Delete Service</a>
+            <a class="btn btn-secondary" href="{% url 'edit_service' service.id %}">Edit Service</a>
+            <a class="btn btn-danger" href="{% url 'delete_service' service.id %}">Delete Service</a>
            
         </div>
         {% endif %}
