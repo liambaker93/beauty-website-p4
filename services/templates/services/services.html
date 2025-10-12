@@ -4,7 +4,16 @@
 Services
 {% endblock %}
 {% block content %}
-<h1>Services page</h1>
+<div class="row text-center service-header">
+    <div class="col">
+        <h2>Check out my services!</h2>
+    </div>
+        {% if user.is_superuser %}
+    <div class="col">
+        <a type="button" class="btn btn-primary" href="{% url 'add_new_service' %}">Add a new service</a>
+    </div>
+        {% endif %}
+</div>
 <div class="container">
     <div class="row">
         {% for service in services %}
@@ -21,11 +30,7 @@ Services
         </div>
         {% endif %}
         {% endfor %}
-        {% if user.is_superuser %}
-        <div class="col">
-            <a class="btn btn-outline-black" href="{% url 'add_new_service' %}">Add a new service</a>
-        </div>
-        {% endif %}
+
     </div>
 </div>
 

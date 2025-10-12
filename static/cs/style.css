@@ -2,3 +2,11 @@
     max-height: fit-content;
     margin-bottom: 15px;
 }
+
+.service-header {
+    margin-top: 25px;
+}
+
+.new_service_form {
+    color: aqua;
+}
