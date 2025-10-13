@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.http import JsonResponse
 from .models import Appointments
 from .forms import BookingForm
 from services.models import ServicesList
@@ -41,22 +42,35 @@ def addAppointment(request, service_id):
             selected_date = form.cleaned_data['appointment_date']
             selected_service = form.cleaned_data['service']
 
+            is_duplicate = Appointments.objects.filter(
+                appointment_date=selected_date,
+                appointment_time=selected_time
+            ).exists()
+
+            if is_duplicate:
+                error_message = f"Booking failed. The slot on {selected_date} at \
+                    {selected_time} is already taken. Please select another."
+                
+                context = {
+                    'form': form,
+                    'service': service,
+                    'error': error_message,
+                }
+                return render(request, 'appointments/add_appointment.html', context)
+
             confirmation_message = (f"Booking successful! See you for \
                                     {selected_service} at \
                                     {selected_time} on {selected_date}.")
-            
             new_booking.save()
 
             new_booking_id = new_booking.booking_id
-            
-            template = 'appointments/booking_confirmed.html'
 
             context = {
                 'message': confirmation_message,
                 'booking_id': new_booking_id,
             }
 
-            return redirect('booking_confirmation', booking_uuid=new_booking_id)
+            return redirect('booking_confirmation', booking_id=new_booking_id)
     else:
         form = BookingForm(initial={'service': service})
     
@@ -66,3 +80,20 @@ def addAppointment(request, service_id):
     }
     
     return render(request, 'appointments/add_appointment.html', context)
+
+
+def bookingConfirmation(request, booking_id):
+    """
+    Handles displaying the booking confirmation page generated via the new uuid from bookings
+    """
+    booking = get_object_or_404(Appointments, booking_id=booking_id)
+
+    context = {
+        'booking': booking,
+        'booking_id': booking_id,
+        'message': f"Your booking for {booking.service.name} is confirmed!",
+    }
+
+    template = 'appointments/booking_confirmed.html'
+    
+    return render(request, template, context)

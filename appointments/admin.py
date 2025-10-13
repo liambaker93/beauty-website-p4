@@ -23,5 +23,3 @@ class AppointmentsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Appointments, AppointmentsAdmin)
-
-

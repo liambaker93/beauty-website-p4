@@ -22,7 +22,7 @@ Services
             <p>{{ service.description }}</p>
             <p>{{ service.get_friendly_timeframe }}</p>
             <p>£{{ service.price }}</p>
-            <button class="btn btn-primary" href="{% url 'add_appointment' service.id %}">Book Now</button>
+            <a class="btn btn-primary" href="{% url 'add_appointment' service.id %}">Book Now</a>
         {% if user.is_superuser %}
             <a class="btn btn-secondary" href="{% url 'edit_service' service.id %}">Edit Service</a>
             <a class="btn btn-danger" href="{% url 'delete_service' service.id %}">Delete Service</a>
