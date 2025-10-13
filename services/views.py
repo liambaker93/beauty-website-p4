@@ -76,7 +76,7 @@ def addNewService(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Successfully added service!")
-            return redirect(reverse('home'))
+            return redirect(reverse('services'))
         else:
             messages.error(request, "Adding service failed. Please ensure the form is valid.")
     else:
