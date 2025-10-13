@@ -3,5 +3,11 @@
 <p>Welcome to the account page</p>
 {% if user.is_authenticated %}
 <p>Hi there {{ request.user.first_name }}</p>
+{% for booking in appointments %}
+<p>{{ booking.service.name }}</p>
+<p>{{ booking.appointment_time }} on {{ booking.appointment_date }}</p>
+{% endfor %}
+{% else %}
+<p>Please <a href="{% url 'account_login' %}">log in</a> to create and view bookings.</p>
 {% endif %}
 {% endblock %}
