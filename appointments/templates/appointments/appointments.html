@@ -1,10 +1,25 @@
 {% extends 'base.html' %}
+
 {% load static %}
+
 {% block extra_js %}
 <script src="{% static 'js/calendar.js' %}"></script>
 {% endblock %}
-{% block content %}
-<div id="calendar">
 
+{% block extra_title %}
+Appointments
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-8" id="calendar">
+        </div>
+        {% if user.is_staff %}
+        <div class="col-4">
+            <h2>All Bookings:</h2>
+        </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

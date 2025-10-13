@@ -146,7 +146,7 @@ def addNewCategory(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Successfully added category!")
-            return redirect(reverse('services'))
+            return redirect(reverse('add_new_service'))
         else:
             messages.error(request, "Adding category failed. Please ensure the form is valid.")
     else:

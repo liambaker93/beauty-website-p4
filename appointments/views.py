@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Appointments
+from .forms import BookingForm
+from services.models import ServicesList
 
 
 # Create your views here.
@@ -24,26 +26,43 @@ def viewOrders(request):
     return render(request, 'appointments/user_order.html')
 
 
-def addService(request, service_id):
+def addAppointment(request, service_id):
     """
     Adds a service to the user's order
     """
-    service = get_object_or_404(Appointments, pk=service_id)
-    redirect_url = request.POST.get('redirect_url')
-    orders = request.session.get('orders', {})
+    service = get_object_or_404(ServicesList, pk=service_id)
 
-    if service_id not in list(orders.keys()):
-        orders[service_id] = {
-            'service': service.name,
-            'price': service.deposit_cost,
-            'date': service.appointment_date,
-            'time': service.appointment_time,
-        }
-        messages.success(request, f"Added {service.name}")
+    if request.method == 'POST':
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            new_booking = form.save(commit=False)
+            new_booking.service = service
+            selected_time = form.cleaned_data['appointment_time']
+            selected_date = form.cleaned_data['appointment_date']
+            selected_service = form.cleaned_data['service']
+
+            confirmation_message = (f"Booking successful! See you for \
+                                    {selected_service} at \
+                                    {selected_time} on {selected_date}.")
+            
+            new_booking.save()
+
+            new_booking_id = new_booking.booking_id
+            
+            template = 'appointments/booking_confirmed.html'
+
+            context = {
+                'message': confirmation_message,
+                'booking_id': new_booking_id,
+            }
+
+            return redirect('booking_confirmation', booking_uuid=new_booking_id)
     else:
-        messages.info(request, f"{service.name} is already in your order.")
-
-    request.session['orders'] = orders
-    request.session.modified = True
-
-    return redirect(redirect_url)
+        form = BookingForm(initial={'service': service})
+    
+    context = {
+        'form': form,
+        'service': service,
+    }
+    
+    return render(request, 'appointments/add_appointment.html', context)
