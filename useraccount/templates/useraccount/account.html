@@ -1,13 +1,26 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block extra_title %}
+Account
+{% endblock %}
 {% block content %}
-<p>Welcome to the account page</p>
+<p>Welcome to the account page{% if user.is_authenticated %} {{ request.user.first_name }}{% else %}. 
+    Please <a href="{% url 'account_login' %}">log in</a> to create and view bookings.{% endif %}</p>
 {% if user.is_authenticated %}
-<p>Hi there {{ request.user.first_name }}</p>
-{% for booking in appointments %}
-<p>{{ booking.service.name }}</p>
-<p>{{ booking.appointment_time }} on {{ booking.appointment_date }}</p>
-{% endfor %}
-{% else %}
-<p>Please <a href="{% url 'account_login' %}">log in</a> to create and view bookings.</p>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            </div>
+    <div class="row">
+    <div class="col-8">
+    {% for booking in appointments %}
+    <p>{{ booking.service.name }} at {{ booking.appointment_time }} on {{ booking.appointment_date }}</p>
+    </div>
+            </div>
+            {% endfor %}
 {% endif %}
+        </div>
+    </div>
+</div>
+
 {% endblock %}

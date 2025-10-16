@@ -43,7 +43,7 @@ def addAppointment(request, service_id):
 
             is_duplicate = Appointments.objects.filter(
                 appointment_date=selected_date,
-                appointment_time=selected_time
+                appointment_time=selected_time,
             ).exists()
 
             if is_duplicate:

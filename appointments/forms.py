@@ -1,5 +1,6 @@
 from django import forms
 from .models import Appointments
+from decimal import Decimal
 
 
 class BookingForm(forms.ModelForm):
