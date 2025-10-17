@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block extra_js %}
+<script>
+    const events_api_url = "{% url 'calendar_events' %}";
+    const eventUser = '{{ request.user.is_authenticated|yesno:"request.user.pk" }}';
+    const eventSuperUser = '{{ request.user.is_superuser|yesno:"true,false" }}';
+</script>
 <script src="{% static 'js/calendar_detail.js' %}"></script>
 {% endblock %}
 {% block content %}
