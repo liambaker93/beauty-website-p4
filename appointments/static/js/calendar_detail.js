@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    if (eventSuperUser) {
+    if (eventUser) {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'timeGridDay',
@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
             slotMinTime: '08:00:00',
             slotMaxTime: '18:00:00',
             selectable: 'true',
-            
             events: {
                 url: events_api_url,
                 method: 'GET',
@@ -15,16 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('Could not get events from the server!');
                 }
             },
-        });
-        calendar.render();
-    } else {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'timeGridDay',
-            slotDuration: '00:45:00',
-            slotMinTime: '08:00:00',
-            slotMaxTime: '18:00:00',
-            selectable: 'true',
         });
         calendar.render();
     };

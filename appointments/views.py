@@ -103,6 +103,7 @@ def bookingConfirmation(request, booking_id):
 
     return render(request, template, context)
 
+
 def calendar_events(request):
     start_date_str = request.GET.get('start')
     end_date_str = request.GET.get('end')
@@ -111,6 +112,7 @@ def calendar_events(request):
         return JsonResponse([], safe=False)
     
     user = request.user
+    is_staff = user.is_authenticated and user.is_staff
 
     try:
         start_date = datetime.fromisoformat(start_date_str.replace('Z', '+00:00'))
@@ -118,17 +120,21 @@ def calendar_events(request):
     except (ValueError, TypeError):
         return JsonResponse([], safe=False)
     
-    bookings = Appointments.objects.filter(
+    bookings_queryset = Appointments.objects.filter(
         appointment_date__gte=start_date.date(),
         appointment_date__lt=end_date.date(),
-        user=user,
     )
 
+    if not is_staff and user.is_authenticated:
+        bookings_queryset = bookings_queryset.filter(user=user)
+    elif not user.is_authenticated:
+        return JsonResponse([], safe=False)
+
     events = []
-    for booking in bookings:
+    for booking in bookings_queryset:
         start_datetime = datetime.combine(booking.appointment_date, booking.appointment_time)
 
-        end_datetime = start_datetime + timedelta(hours=1)
+        end_datetime = start_datetime + timedelta(hours=0.75)
 
         events.append({
             'title': f"Booked: {booking.service.name}",
