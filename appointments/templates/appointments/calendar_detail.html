@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block extra_title %}
+Bookings
+{% endblock %}
 {% block extra_js %}
 <script>
     const events_api_url = "{% url 'calendar_events' %}";

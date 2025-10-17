@@ -29,26 +29,28 @@ def services(request):
                 services = services.annotate(lower_name=Lower('name'))
             if sortkey == 'category':
                 sortkey = 'category__name'
-            
+
             if 'direction' in request.GET:
                 direction = request.GET['direction']
                 if direction == 'desc':
                     sortkey = f'-{sortkey}'
             services = services.order_by(sortkey)
-        
+
         if 'category' in request.GET:
             categories = request.GET['category'].split(',')
             services = services.filter(category__name__in=categories)
             categories = ServiceCategory.objects.filter(name__in=categories)
-        
+
         if 'q' in request.GET:
             query = request.GET['q']
             if not query:
-                messages.error(request, "You didn't enter any search criteria!")
+                messages.error
+                (request, "You didn't enter any search criteria!")
                 return redirect(reverse('services'))
-            queries = Q(name__icontains=query) | Q(description__icontains=query)
+            queries = Q(name__icontains=query) | Q(
+                description__icontains=query)
             services = services.filter(queries)
-    
+
     current_sort = f"{sort}_{direction}"
 
     context = {
@@ -63,14 +65,15 @@ def services(request):
 
 def addNewService(request):
     """
-    Ability for admin user to add a new service to the site from within the webpage
+    Ability for admin user to add a new service to the site from
+    within the webpage
     instead of via the admin page.
     """
-    ## add blank space validation
+    # add blank space validation
     if not request.user.is_superuser:
         messages.error(request, "Sorry, only the store owner can do that!")
         return redirect(reverse('services'))
-    
+
     if request.method == 'POST':
         form = ServiceForm(request.POST, request.FILES)
         if form.is_valid():
@@ -78,10 +81,12 @@ def addNewService(request):
             messages.success(request, "Successfully added service!")
             return redirect(reverse('services'))
         else:
-            messages.error(request, "Adding service failed. Please ensure the form is valid.")
+            messages.error
+            (request, "Adding service failed. "
+                "Please ensure the form is valid.")
     else:
         form = ServiceForm()
-    
+
     template = 'services/add_service.html'
     context = {
         'form': form,
@@ -105,7 +110,9 @@ def editService(request, service_id):
             messages.success(request, "Successfully updated service!")
             return redirect(reverse('services'))
         else:
-            messages.error(request, "Failed to update service. Please ensure the form is valid.")
+            messages.error
+            (request, "Failed to update service. "
+                "Please ensure the form is valid.")
     else:
         form = ServiceForm(instance=service)
         messages.info(request, f"You are editing {service.name}")
@@ -132,15 +139,17 @@ def deleteService(request, service_id):
     messages.success(request, 'Service Deleted!')
     return redirect(reverse('services'))
 
+
 def addNewCategory(request):
     """
-    Ability for admin user to add a new category to the site from within the webpage
+    Ability for admin user to add a new category
+    to the site from within the webpage
     instead of via the admin page
     """
     if not request.user.is_superuser:
         messages.error(request, "Sorry, only the store owner can do that!")
         return redirect(reverse('home'))
-    
+
     if request.method == 'POST':
         form = ServiceCategoryForm(request.POST, request.FILES)
         if form.is_valid():
@@ -148,10 +157,12 @@ def addNewCategory(request):
             messages.success(request, "Successfully added category!")
             return redirect(reverse('add_new_service'))
         else:
-            messages.error(request, "Adding category failed. Please ensure the form is valid.")
+            messages.error
+            (request, "Adding category failed. "
+                "Please ensure the form is valid.")
     else:
         form = ServiceCategoryForm()
-    
+
     template = 'services/add_category.html'
     context = {
         'form': form,

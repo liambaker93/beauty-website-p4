@@ -13,13 +13,24 @@ Appointments
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-8" id="calendar">
-        </div>
+        <div class="col-8" id="calendar"></div>
         {% if user.is_staff %}
         <div class="col-4">
             <h2>All Bookings:</h2>
-        </div>
+            {% for booking in bookings %}
+            <div class="row">
+                <div class="col">
+                    <h3>{{ booking.service.name }} with {{ booking.user_name }}</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p>{{ booking.appointment_date }} at {{ booking.appointment_time }}</p>
+                </div>
+            </div>
+            {% endfor %}
         {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}

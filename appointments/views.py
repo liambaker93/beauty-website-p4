@@ -7,14 +7,17 @@ from .forms import BookingForm
 from services.models import ServicesList
 
 
-
 # Create your views here.
 
 def appointmentsPage(request):
+    # Random code string generated for booking id to feed into HTML template and JS function    
+    bookings = Appointments.objects.all().order_by('appointment_date')
 
-    ## Random code string generated for booking id to feed into HTML template and JS function    
+    context = {
+        'bookings': bookings
+    }
 
-    return render(request, 'appointments/appointments.html')
+    return render(request, 'appointments/appointments.html', context)
 
 
 def fullCalendar(request):
@@ -105,6 +108,12 @@ def bookingConfirmation(request, booking_id):
 
 
 def calendar_events(request):
+    """
+    Handles displaying booking info within the calendar detail page.
+    The view seperates what users are able to see based on their account privilege.
+    Users can see their own bookings only, staff users and above can see all bookings being made.
+    Unauthenticated users (guests) can see no bookings made.
+    """
     start_date_str = request.GET.get('start')
     end_date_str = request.GET.get('end')
 
