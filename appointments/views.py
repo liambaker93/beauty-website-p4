@@ -10,11 +10,23 @@ from services.models import ServicesList
 # Create your views here.
 
 def appointmentsPage(request):
-    # Random code string generated for booking id to feed into HTML template and JS function    
-    bookings = Appointments.objects.all().order_by('appointment_date')
+    """
+    View that displays a full calendar to all users.
+    Displays to staff a list of bookings made by all users.
+    """
+    user = request.user
+    bookings = Appointments.objects.all().order_by('appointment_date', 'appointment_time')
+
+    if user.is_authenticated:
+        user_bookings = Appointments.objects.filter(user=user).order_by('appointment_date', 'appointment_time')
+        context = {
+            'user_bookings': user_bookings,
+        }
+
+        return render(request, 'appointments/appointments.html', context)
 
     context = {
-        'bookings': bookings
+        'bookings': bookings,
     }
 
     return render(request, 'appointments/appointments.html', context)

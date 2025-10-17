@@ -30,7 +30,26 @@ Appointments
             </div>
             {% endfor %}
         {% endif %}
+        {% if user.is_authenticated and not user.is_staff %}
+        <div class="col-4">
+            <h2>Your Bookings:</h2>
+            {% for booking in user_bookings %}
+            <div class="row">
+                <div class="col">
+                    <h3>{{ booking.service.name }}</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p>{{ booking.appointment_date }} at {{ booking.appointment_time }}</p>
+                </div>
+            </div>
+            {% endfor %}
         </div>
+        {% else %}
+        <p>Create an account to view bookings!</p>
+        {% endif %}
+    </div>
     </div>
 </div>
 {% endblock %}
