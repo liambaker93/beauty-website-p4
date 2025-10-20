@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.http import JsonResponse
+from decimal import Decimal
 from .models import Appointments
 from .forms import BookingForm
 from services.models import ServicesList
@@ -49,6 +50,8 @@ def addAppointment(request, service_id):
     Adds a service to the user's order
     """
     service = get_object_or_404(ServicesList, pk=service_id)
+    deposit_percentage = Decimal('0.10')
+    deposit_amount = service.price * deposit_percentage
 
     if request.method == 'POST':
         form = BookingForm(request.POST)
@@ -56,6 +59,8 @@ def addAppointment(request, service_id):
         if form.is_valid():
             new_booking = form.save(commit=False)
             new_booking.service = service
+            new_booking.deposit_cost = deposit_amount
+
             selected_time = form.cleaned_data['appointment_time']
             selected_date = form.cleaned_data['appointment_date']
 
@@ -72,6 +77,7 @@ def addAppointment(request, service_id):
                     'form': form,
                     'service': service,
                     'error': error_message,
+                    'deposit_cost': deposit_amount,
                 }
                 return render(request, 'appointments/add_appointment.html', context)
 
@@ -88,16 +94,19 @@ def addAppointment(request, service_id):
             context = {
                 'message': confirmation_message,
                 'booking_id': new_booking_id,
+                'deposit_cost': deposit_amount,
             }
             request.session['basket'] = str(new_booking_id)
             print(['basket'])
             return redirect('booking_confirmation', booking_id=new_booking_id)
     else:
-        form = BookingForm(initial={'service': service})
+        form = BookingForm(initial={'service': service,
+                                    "deposit_cost": deposit_amount,})
 
     context = {
         'form': form,
         'service': service,
+        'deposit_cost': deposit_amount,
     }
 
     return render(request, 'appointments/add_appointment.html', context)
@@ -131,7 +140,7 @@ def calendar_events(request):
 
     if not request.user.is_authenticated:
         return JsonResponse([], safe=False)
-    
+
     user = request.user
     is_staff = user.is_authenticated and user.is_staff
 
@@ -140,7 +149,7 @@ def calendar_events(request):
         end_date = datetime.fromisoformat(end_date_str.replace('Z', '+00:00'))
     except (ValueError, TypeError):
         return JsonResponse([], safe=False)
-    
+
     bookings_queryset = Appointments.objects.filter(
         appointment_date__gte=start_date.date(),
         appointment_date__lt=end_date.date(),
@@ -153,12 +162,12 @@ def calendar_events(request):
 
     events = []
     for booking in bookings_queryset:
-        start_datetime = datetime.combine(booking.appointment_date, booking.appointment_time)
 
+        start_datetime = datetime.combine(booking.appointment_date, booking.appointment_time)
         end_datetime = start_datetime + timedelta(hours=0.75)
 
         events.append({
-            'title': f"Booked: {booking.service.name}",
+            'title': f"Booked: {booking.service.name}.",
             'start': start_datetime.isoformat(),
             'end': end_datetime.isoformat(),
         })
