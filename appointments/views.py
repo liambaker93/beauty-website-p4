@@ -16,21 +16,20 @@ def appointmentsPage(request):
     Displays to staff a list of bookings made by all users.
     """
     user = request.user
-    bookings = Appointments.objects.all().order_by('appointment_date', 'appointment_time')
+    all_bookings = Appointments.objects.all().order_by('appointment_date', 'appointment_time')
+    user_bookings = Appointments.objects.filter(user=user).order_by('appointment_date', 'appointment_time')
+    template = 'appointments/appointments.html'
 
     if user.is_authenticated:
-        user_bookings = Appointments.objects.filter(user=user).order_by('appointment_date', 'appointment_time')
-        context = {
-            'user_bookings': user_bookings,
-        }
-
-        return render(request, 'appointments/appointments.html', context)
-
-    context = {
-        'bookings': bookings,
-    }
-
-    return render(request, 'appointments/appointments.html', context)
+        if user.is_staff:
+            context = {
+                'bookings': all_bookings,
+            }
+        else:
+            context = {
+                'bookings': user_bookings,
+            }
+        return render(request, template, context)
 
 
 def fullCalendar(request):
