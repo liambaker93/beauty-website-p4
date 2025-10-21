@@ -16,8 +16,10 @@ def appointmentsPage(request):
     Displays to staff a list of bookings made by all users.
     """
     user = request.user
-    all_bookings = Appointments.objects.all().order_by('appointment_date', 'appointment_time')
-    user_bookings = Appointments.objects.filter(user=user).order_by('appointment_date', 'appointment_time')
+    all_bookings = Appointments.objects.all().order_by(
+        'appointment_date', 'appointment_time')
+    user_bookings = Appointments.objects.filter(user=user).order_by(
+        'appointment_date', 'appointment_time')
     template = 'appointments/appointments.html'
 
     if user.is_authenticated:
@@ -46,73 +48,14 @@ def viewOrders(request):
 
 def addAppointment(request, service_id):
     """
-    Adds a service to the user's order
+    Adds a service to the user's order, and then handles payment
     """
-    service = get_object_or_404(ServicesList, pk=service_id)
-    #deposit_percentage = Decimal('0.10')
-    #deposit_amount = service.price * deposit_percentage
-
-    if request.method == 'POST':
-        form = BookingForm(request.POST)
-
-        if form.is_valid():
-            new_booking = form.save(commit=False)
-            new_booking.service = service
-            #new_booking.deposit_cost = deposit_amount
-
-            selected_time = form.cleaned_data['appointment_time']
-            selected_date = form.cleaned_data['appointment_date']
-
-            is_duplicate = Appointments.objects.filter(
-                appointment_date=selected_date,
-                appointment_time=selected_time,
-            ).exists()
-
-            if is_duplicate:
-                error_message = f"Booking failed. The slot on {selected_date} at \
-                    {selected_time} is already taken. Please select another."
-
-                context = {
-                    'form': form,
-                    'service': service,
-                    'error': error_message,
-                    #'deposit_cost': deposit_amount,
-                }
-                return render(request, 'appointments/add_appointment.html', context)
-
-            confirmation_message = (f"Booking successful! See you for \
-                                    {service.name} at \
-                                    {selected_time} on {selected_date}.")
-            if request.user.is_authenticated:
-                new_booking.user = request.user
-
-            new_booking.save()
-
-            new_booking_id = new_booking.booking_id
-
-            context = {
-                'message': confirmation_message,
-                'booking_id': new_booking_id,
-                #'deposit_cost': deposit_amount,
-            }
-            request.session['basket'] = str(new_booking_id)
-            print(['basket'])
-            return redirect('booking_confirmation', booking_id=new_booking_id)
-    else:
-        form = BookingForm(initial={'service': service})
-
-    context = {
-        'form': form,
-        'service': service,
-        #'deposit_cost': deposit_amount,
-    }
-
-    return render(request, 'appointments/add_appointment.html', context)
 
 
 def bookingConfirmation(request, booking_id):
     """
-    Handles displaying the booking confirmation page generated via the new uuid from bookings
+    Handles displaying the booking confirmation page generated
+    via the new uuid from bookings
     """
     booking = get_object_or_404(Appointments, booking_id=booking_id)
 
@@ -129,8 +72,10 @@ def bookingConfirmation(request, booking_id):
 def calendar_events(request):
     """
     Handles displaying booking info within the calendar detail page.
-    The view seperates what users are able to see based on their account privilege.
-    Users can see their own bookings only, staff users and above can see all bookings being made.
+    The view seperates what users are able to see based
+    on their account privilege.
+    Users can see their own bookings only, staff users and above
+    can see all bookings being made.
     Unauthenticated users (guests) can see no bookings made.
     """
     start_date_str = request.GET.get('start')
@@ -143,7 +88,8 @@ def calendar_events(request):
     is_staff = user.is_authenticated and user.is_staff
 
     try:
-        start_date = datetime.fromisoformat(start_date_str.replace('Z', '+00:00'))
+        start_date = datetime.fromisoformat(start_date_str.replace
+                                            ('Z', '+00:00'))
         end_date = datetime.fromisoformat(end_date_str.replace('Z', '+00:00'))
     except (ValueError, TypeError):
         return JsonResponse([], safe=False)
@@ -161,7 +107,8 @@ def calendar_events(request):
     events = []
     for booking in bookings_queryset:
 
-        start_datetime = datetime.combine(booking.appointment_date, booking.appointment_time)
+        start_datetime = datetime.combine(
+            booking.appointment_date, booking.appointment_time)
         end_datetime = start_datetime + timedelta(hours=0.75)
 
         events.append({

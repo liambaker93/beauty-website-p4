@@ -19,7 +19,9 @@ class AppointmentsAdmin(admin.ModelAdmin):
 
     ordering = ('service',)
 
-    readonly_fields = ('booking_id',)
+    readonly_fields = ('booking_id', 'service', 'appointment_time',
+                       'appointment_date', 'booking_time', 'user_name',
+                       'deposit_cost', 'final_cost')
 
 
 admin.site.register(Appointments, AppointmentsAdmin)

@@ -21,6 +21,8 @@ class Appointments(models.Model):
         max_digits=6, decimal_places=2, null=False, default=0)
     booking_id = models.UUIDField(
         default=uuid.uuid4, editable=False, unique=True)
+    final_cost = models.DecimalField(
+        max_digits=6, decimal_places=2, null=False, default=0, editable=False)
 
     class Meta:
         verbose_name_plural = 'Appointments'
@@ -35,7 +37,7 @@ class Appointments(models.Model):
         deposit_percentage = 0.10
 
         return self.service.price * deposit_percentage
-    
+
     def total_service_cost(self):
 
         return self.service.price
