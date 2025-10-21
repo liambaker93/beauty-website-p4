@@ -1,3 +1,35 @@
+/* Google fonts link */
+@import url('https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700;800&display=swap');
+
+/* CSS Font Variables */
+
+:root {
+    --primary-font: "Mukta", sans-serif;
+}
+
+/* CSS Colour variables, hexes provided by Coolors */
+
+:root {
+    --duck-green: #0B7A75;
+    --dark-red: #F0F3F5;
+}
+
+/* Global Styles */
+
+body {
+    font-family: var(--primary-font);
+    background-color: var(--duck-green);
+    color: var(--dark-red);
+}
+
+/* Nav Bar Styles */
+
+nav {
+    background-color: var(--duck-green) !important;
+}
+
+/* Index page styles */
+
 .home-box {
     max-height: fit-content;
     margin-bottom: 15px;

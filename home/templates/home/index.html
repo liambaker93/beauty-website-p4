@@ -33,8 +33,13 @@ Homepage
         <div class="col-4">
             {% include 'home/random_service.html' %}
             <div class="row border h-100 home-box">
+            {% if user.is_authenticated %}
+                <h2>Welcome {{ request.user.first_name }}</h2>
+                <p>You have {{ closest_appointment.service.name }} coming up.</p>
+            {% else %}
                 <h2>Sign up for an account!</h2>
                 <p>Get some loyalty rewards</p>
+            {% endif %}
             </div>
             <div class="row border h-100 home-box">
                 <h2>Testimonials</h2>

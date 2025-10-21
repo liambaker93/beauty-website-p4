@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.conf import settings
-import random, requests
+from django.utils import timezone
+import random
 from services.models import ServicesList
+from appointments.models import Appointments
 
 # Create your views here.
 
@@ -13,8 +14,6 @@ def index(request):
     """
     items = list(ServicesList.objects.all())
 
-    print(f"Total items queried: {len(items)}")
-
     sample_size = min(len(items), 2)
 
     if sample_size > 0:
@@ -22,12 +21,37 @@ def index(request):
     else:
         random_items = []
 
-    print(f"Final random items count: {len(random_items)}")
-    for item in random_items:
-        print(f"Item title: {item.name}")
-
     context = {
         'random_services': random_items
+    }
+
+    return render(request, 'home/index.html', context)
+
+
+def closest_appointment(request):
+    """
+    A view to display the closest appointment in time to the user
+    """
+    user = request.user
+
+    current_date = timezone.localdate()
+
+    future_bookings = Appointments.objects.filter(
+        appointment_date__gte=current_date
+    )
+
+    closest_appointment = None
+
+    if user.is_authenticated:
+        future_bookings = future_bookings.filter(user=user)
+
+        closest_appointment = future_bookings.order_by(
+            'appointment_date',
+            'appointment_time',
+        ).first()
+    
+    context = {
+        'closest_appointment': closest_appointment,
     }
 
     return render(request, 'home/index.html', context)
