@@ -50,6 +50,65 @@ def addAppointment(request, service_id):
     """
     Adds a service to the user's order, and then handles payment
     """
+    service = get_object_or_404(ServicesList, pk=service_id)
+    template = 'appointments/add_appointment.html/'
+
+    if request.method == 'POST':
+        booking_form = BookingForm(request.POST)
+
+        if booking_form.is_valid():
+            new_booking = booking_form.save(commit=False)
+            new_booking.service = service
+
+            selected_time = booking_form.cleaned_data['appointment_time']
+            selected_date = booking_form.cleaned_data['appointment_date']
+
+            is_duplicate = Appointments.objects.filter(
+                appointment_date=selected_date,
+                appointment_time=selected_time,
+            ).exists()
+
+            if is_duplicate:
+                error_message = f"Booking failed. The slot on \
+                {selected_date} at {selected_time} is already taken. \
+                    Please select another."
+                context = {
+                    'booking_form': booking_form,
+                    'service': service,
+                    'error': error_message,
+                }
+                return render(request, template, context)
+
+            confirmation_message = (f"Booking successful! See you for \
+                                    {service.name} at \
+                                        {selected_time} on {selected_date}.")
+            if request.user.is_authenticated:
+                new_booking.user = request.user
+            
+            new_booking.save()
+
+            new_booking_id = new_booking.booking_id
+
+            context = {
+                'message': confirmation_message,
+                'booking_id': new_booking_id,
+            }
+            return redirect('booking_confirmation', booking_id=new_booking_id)
+        else:
+            booking_form = BookingForm(initial={'service': service})
+        
+        context = {
+            'booking_form': booking_form,
+            'service': service,
+        }
+
+    booking_form = BookingForm()
+    context = {
+        'booking_form': booking_form,
+        'service': service,
+    }
+
+    return render(request, template, context)
 
 
 def bookingConfirmation(request, booking_id):

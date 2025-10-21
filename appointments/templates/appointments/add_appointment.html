@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
-{% block extra_js %}
-<script src="https://js.stripe.com/clover/stripe.js"></script>
+{% block extracss %}
+<link href="{% static 'checkout/css/checkout.css' %}" rel="stylesheet">
 {% endblock %}
+
 {% block extra_title %}
 Appointments
 {% endblock %}
@@ -16,7 +17,7 @@ Appointments
 <div class=" d-flex col-6 justify-content-end">
     <form method="POST" action="{% url 'add_appointment' service.id %}" class="form mb-2" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form | crispy }}
+        {{ booking_form | crispy }}
         <div>
             <a class="btn btn-secondary" href="{% url 'services' %}">Cancel</a>
             <button class="btn btn-primary" type="submit">Book Now</button>
@@ -25,4 +26,10 @@ Appointments
 </div>
 
 
+{% endblock %}
+{% block postloadjs %}
+    {{ block.super }}
+    {{ stripe_public_key|json_script:"id_stripe_public_key" }}
+    {{ stripe_secret_key|json_script:"id_stripe_secret_key" }}
+    <script src="{% static 'checkout/js/stripe_elements.js' %}"></script>
 {% endblock %}
