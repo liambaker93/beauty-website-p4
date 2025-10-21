@@ -8,7 +8,7 @@ Services
     <div class="col">
         <h2>Check out my services!</h2>
     </div>
-        {% if user.is_superuser %}
+        {% if user.is_staff %}
     <div class="col">
         <a type="button" class="btn btn-primary" href="{% url 'add_new_service' %}">Add a new service</a>
     </div>
@@ -23,7 +23,7 @@ Services
             <p>{{ service.get_friendly_timeframe }}</p>
             <p>£{{ service.price }}</p>
             <a class="btn btn-primary" href="{% url 'add_appointment' service.id %}">Book Now</a>
-        {% if user.is_superuser %}
+        {% if user.is_staff %}
             <a class="btn btn-secondary" href="{% url 'edit_service' service.id %}">Edit Service</a>
             <a class="btn btn-danger" href="{% url 'delete_service' service.id %}">Delete Service</a>
            

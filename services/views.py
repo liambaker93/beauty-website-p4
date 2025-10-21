@@ -70,7 +70,7 @@ def addNewService(request):
     instead of via the admin page.
     """
     # add blank space validation
-    if not request.user.is_superuser:
+    if not request.user.is_staff:
         messages.error(request, "Sorry, only the store owner can do that!")
         return redirect(reverse('services'))
 
@@ -99,7 +99,7 @@ def editService(request, service_id):
     """
     Ability for the admin user to edit services on the website
     """
-    if not request.user.is_superuser:
+    if not request.user.is_staff:
         messages.error(request, "Sorry, only the store owner can do that!")
         return redirect(reverse('services'))
     service = get_object_or_404(ServicesList, pk=service_id)
@@ -130,7 +130,7 @@ def deleteService(request, service_id):
     """
     Ability for the admin user to edit services on the website
     """
-    if not request.user.is_superuser:
+    if not request.user.is_staff:
         messages.error(request, "Sorry, only the store owner can do that!")
         return redirect(reverse('services'))
     print(f"Service being deleted is: {service_id}")
@@ -146,7 +146,7 @@ def addNewCategory(request):
     to the site from within the webpage
     instead of via the admin page
     """
-    if not request.user.is_superuser:
+    if not request.user.is_staff:
         messages.error(request, "Sorry, only the store owner can do that!")
         return redirect(reverse('home'))
 

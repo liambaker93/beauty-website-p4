@@ -11,14 +11,13 @@
 
 :root {
     --duck-green: #0B7A75;
-    --dark-red: #F0F3F5;
+    --dark-red: #7B2D26;
 }
 
 /* Global Styles */
 
 body {
     font-family: var(--primary-font);
-    background-color: var(--duck-green);
     color: var(--dark-red);
 }
 

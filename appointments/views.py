@@ -49,8 +49,8 @@ def addAppointment(request, service_id):
     Adds a service to the user's order
     """
     service = get_object_or_404(ServicesList, pk=service_id)
-    deposit_percentage = Decimal('0.10')
-    deposit_amount = service.price * deposit_percentage
+    #deposit_percentage = Decimal('0.10')
+    #deposit_amount = service.price * deposit_percentage
 
     if request.method == 'POST':
         form = BookingForm(request.POST)
@@ -58,7 +58,7 @@ def addAppointment(request, service_id):
         if form.is_valid():
             new_booking = form.save(commit=False)
             new_booking.service = service
-            new_booking.deposit_cost = deposit_amount
+            #new_booking.deposit_cost = deposit_amount
 
             selected_time = form.cleaned_data['appointment_time']
             selected_date = form.cleaned_data['appointment_date']
@@ -76,7 +76,7 @@ def addAppointment(request, service_id):
                     'form': form,
                     'service': service,
                     'error': error_message,
-                    'deposit_cost': deposit_amount,
+                    #'deposit_cost': deposit_amount,
                 }
                 return render(request, 'appointments/add_appointment.html', context)
 
@@ -93,19 +93,18 @@ def addAppointment(request, service_id):
             context = {
                 'message': confirmation_message,
                 'booking_id': new_booking_id,
-                'deposit_cost': deposit_amount,
+                #'deposit_cost': deposit_amount,
             }
             request.session['basket'] = str(new_booking_id)
             print(['basket'])
             return redirect('booking_confirmation', booking_id=new_booking_id)
     else:
-        form = BookingForm(initial={'service': service,
-                                    "deposit_cost": deposit_amount,})
+        form = BookingForm(initial={'service': service})
 
     context = {
         'form': form,
         'service': service,
-        'deposit_cost': deposit_amount,
+        #'deposit_cost': deposit_amount,
     }
 
     return render(request, 'appointments/add_appointment.html', context)
