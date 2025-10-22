@@ -19,8 +19,10 @@ Appointments
         {% csrf_token %}
         {{ booking_form | crispy }}
         <div>
+            <input type="hidden" value="{{ client_secret }}" name="client_secret">
             <a class="btn btn-secondary" href="{% url 'services' %}">Cancel</a>
             <button class="btn btn-primary" type="submit">Book Now</button>
+            <div class="mb-3" id="card-element"></div>
         </div>
     </form>
 </div>
@@ -29,7 +31,7 @@ Appointments
 {% endblock %}
 {% block postloadjs %}
     {{ block.super }}
-    {{ stripe_public_key|json_script:"id_stripe_public_key" }}
-    {{ stripe_secret_key|json_script:"id_stripe_secret_key" }}
+    {{ stripe_public_key|json_script:"id_stripe_public_key"}}
+    {{ client_secret|json_script:"id_client_secret"}}
     <script src="{% static 'checkout/js/stripe_elements.js' %}"></script>
 {% endblock %}

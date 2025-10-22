@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.conf import settings
 from datetime import datetime, timedelta
 from django.http import JsonResponse
 from decimal import Decimal
 from .models import Appointments
 from .forms import BookingForm
 from services.models import ServicesList
+
+import stripe
 
 
 # Create your views here.
@@ -50,15 +53,38 @@ def addAppointment(request, service_id):
     """
     Adds a service to the user's order, and then handles payment
     """
+    stripe_public_key = settings.STRIPE_PUBLIC_KEY
+    stripe_secret_key = settings.STRIPE_SECRET_KEY
+
     service = get_object_or_404(ServicesList, pk=service_id)
+    booking_form = BookingForm()
+
+    deposit_price = service.price / 5 * 100
+
+    stripe_total = round(deposit_price)
+    stripe.api_key = stripe_secret_key
+    intent = stripe.PaymentIntent.create(
+        amount=stripe_total,
+        currency=settings.STRIPE_CURRENCY,
+    )
+
     template = 'appointments/add_appointment.html/'
+    context = {
+        'booking_form': booking_form,
+        'service': service,
+        'stripe_public_key': stripe_public_key,
+        'client_secret': intent.client_secret,
+    }
 
     if request.method == 'POST':
         booking_form = BookingForm(request.POST)
 
         if booking_form.is_valid():
             new_booking = booking_form.save(commit=False)
+            pid = request.POST.get('client_secret').split('_secret')[0]
+            new_booking.stripe_pid = pid
             new_booking.service = service
+            new_booking.deposit_cost = deposit_price
 
             selected_time = booking_form.cleaned_data['appointment_time']
             selected_date = booking_form.cleaned_data['appointment_date']
@@ -72,11 +98,9 @@ def addAppointment(request, service_id):
                 error_message = f"Booking failed. The slot on \
                 {selected_date} at {selected_time} is already taken. \
                     Please select another."
-                context = {
-                    'booking_form': booking_form,
-                    'service': service,
+                context.update({
                     'error': error_message,
-                }
+                })
                 return render(request, template, context)
 
             confirmation_message = (f"Booking successful! See you for \
@@ -89,24 +113,9 @@ def addAppointment(request, service_id):
 
             new_booking_id = new_booking.booking_id
 
-            context = {
-                'message': confirmation_message,
-                'booking_id': new_booking_id,
-            }
             return redirect('booking_confirmation', booking_id=new_booking_id)
         else:
             booking_form = BookingForm(initial={'service': service})
-        
-        context = {
-            'booking_form': booking_form,
-            'service': service,
-        }
-
-    booking_form = BookingForm()
-    context = {
-        'booking_form': booking_form,
-        'service': service,
-    }
 
     return render(request, template, context)
 
