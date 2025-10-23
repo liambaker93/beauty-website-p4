@@ -1,23 +1,42 @@
-const clientSecret = $('#id_client_secret').text().slice(1, -1);
-const stripe = Stripe(clientSecret);
+const stripePublicKey = $('#id_stripe_public_key').text().slice(1, -1);
+const stripe = Stripe(stripePublicKey);
+const clientSecret = $('#id_client_secret');
+const form = document.getElementById('booking-form');
 
-initialize();
+form.addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-// fetches Checkout session and retrieves the client secret
-async function initialize() {
-    const fetchClientSecret = async () => {
-        const response = await fetch("/add_appointment/<int:service_id>", {
-            method: "POST",
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    const serviceId = $('#service_id').val();
+    const csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+
+    console.log("Client-side 'data' object:", data);
+
+    try {
+        const response = await fetch(`/appointments/checkout/create/${serviceId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({ form_data: data })
         });
-        const { clientSecret } = await response.json();
-        return clientSecret;
-    };
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Server-side validation failed:', errorData);
+            return;
+        }       
 
-    // Initialise checkout
-    const checkout = await stripe.initEmbeddedCheckout({
-        fetchClientSecret,
-    });
+        const checkout = await stripe.initEmbeddedCheckout({
+            clientSecret,
+        });
 
-    // Mount checkout
-    checkout.mount('#checkout');
-};
+        checkout.mount('#checkout');
+
+        form.style.display = 'none';
+        document.getElementById('checkout-container').style.display = 'block';
+    } catch (error) {
+        console.log('An error occured:', error);
+    }
+});

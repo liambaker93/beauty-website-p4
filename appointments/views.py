@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.conf import settings
+from django.views.decorators.http import require_POST
 from datetime import datetime, timedelta
 from django.http import JsonResponse
 from decimal import Decimal
@@ -8,6 +9,7 @@ from .models import Appointments
 from .forms import BookingForm
 from services.models import ServicesList
 import stripe
+import json
 
 
 # Create your views here.
@@ -52,74 +54,107 @@ def addAppointment(request, service_id):
     """
     Adds a service to the user's order, and then handles payment
     """
-    stripe_public_key = settings.STRIPE_PUBLIC_KEY
-    stripe_secret_key = settings.STRIPE_SECRET_KEY
-
     service = get_object_or_404(ServicesList, pk=service_id)
-
-    deposit_cost = service.price / 5 * 100
-    stripe_cost = round(deposit_cost)
-
-    stripe.api_key = stripe_secret_key
-    intent = stripe.PaymentIntent.create(
-        amount=stripe_cost,
-        currency=settings.STRIPE_CURRENCY,
-        mode='payment',
-        ui_mode='embedded',
-    )
+    deposit_price = service.price / 5
 
     if request.method == 'POST':
         booking_form = BookingForm(request.POST)
 
         if booking_form.is_valid():
-            new_booking = booking_form.save(commit=False)
-            pid = request.POST.get('client_secret').split('_secret')[0]
-            new_booking.stripe_pid = pid
-            new_booking.service = service
-            new_booking.deposit_cost = stripe_cost
+            pass
+    
+    deposit_cost = round(deposit_price)
 
-            selected_time = booking_form.cleaned_data['appointment_time']
-            selected_date = booking_form.cleaned_data['appointment_date']
+    booking_form = BookingForm(initial={
+        'deposit_cost': deposit_cost,
+        'service': service,
+    })
 
-            is_duplicate = Appointments.objects.filter(
-                appointment_date=selected_date,
-                appointment_time=selected_time,
-            ).exists()
+    context = {
+        'booking_form': booking_form,
+        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+        'deposit_cost': deposit_cost,
+        'service': service,
+        'service_id': service.id,
+    }
 
-            if is_duplicate:
-                error_message = (f"Booking failed. The slot on \
-                    {selected_date} at {selected_time} is already \
-                        taken. Please select another.")
-            
-            confirmation_message = (f"Booking successful! See you for \
-                {service.name} at {selected_time} on {selected_date}.")
-            
-            if request.user.is_authenticated:
-                new_booking.user = request.user
-            
+    return render(request, 'appointments/add_appointment.html', context)
 
-            session = stripe.checkout.Session.create(
-                line_items=[{
-                    'price_data': {
-                        'currency': 'gbp',
-                    },
-                    'quantity': 1,
-                }],
-                mode='payment',
-                ui_mode='embedded',
-                return_url='appointments/booking_confirmed/return?session_id={CHECKOUT_SESSION_ID}',
-            )
 
-            return JsonResponse(clientSecret=session.client_secret)
+@require_POST
+def test_data_reception(request, service_id):
+    service = get_object_or_404(ServicesList, pk=service_id)
+    try:
+        raw_body = request.body.decode()
+        print("Raw Body Received:", raw_body)
 
-        context = {
-            'booking_form': booking_form,
-            'service': service,
-            'client_secret': intent.client_secret,
-        }
+        data = json.loads(request.body)
+        print("Parsed Data:", data)
 
-        return render(request, 'appointments/add_appointment.html', context)
+        form_data = data.get('form_data')
+        print("'Form_data' content:", form_data)
 
+        if form_data:
+            return JsonResponse({'message': 'Data received OK', 'data': form_data})
+        else:
+            return JsonResponse({'error': "Key 'form_data' not found or empty."}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': f'Parsing failed: {str(e)}'}, status=500)
+
+
+@require_POST
+def create_embedded_checkout(request, service_id):
+    try:
+        data = json.loads(request.body)
+        form_data = data.get('form-data')
+        print("Received form data:", form_data)
+
+        service = get_object_or_404(ServicesList, pk=service_id)
+
+        booking_form = BookingForm(form_data)
+
+        if not booking_form.is_valid():
+            print("Form Errors:", booking_form.errors)
+            return JsonResponse({'errors': booking_form.errors}, status=400)
+
+        new_booking = booking_form.save(commit=False)
+        new_booking.service = service
+        new_booking.deposit_cost = service.price / 5
+        new_booking.payment_status = 'PENDING'
+
+        if request.user.is_authenticated:
+            new_booking.user = request.user
+
+        new_booking.save()
+
+        stripe_total = round(new_booking.deposit_cost * 100)
+
+        session = stripe.checkout.Session.create(
+            line_items=[{
+                'price_data': {
+                    'currency': settings.STRIPE_CURRENCY,
+                    'product_data': {'name': service.name + ' Deposit'},
+                    'unit_amount': stripe_total,
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            ui_mode='embedded',
+            return_url=request.build_absolute_uri(
+                f'/appointments/confirmation/{new_booking.id}/?session_id={{CHECKOUT_SESSION_ID}}'
+            ),
+            metadata={'booking_id': str(new_booking.id)},
+        )
+
+        new_booking.stripe_session_id = session.id
+        new_booking.save()
+
+        return JsonResponse({
+            'clientSecret': session.client_secret,
+            'sessionId': session.id,
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 

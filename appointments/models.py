@@ -23,6 +23,16 @@ class Appointments(models.Model):
         default=uuid.uuid4, editable=False, unique=True)
     final_cost = models.DecimalField(
         max_digits=6, decimal_places=2, null=False, default=0, editable=False)
+    stripe_session_id = models.CharField(max_length=250, null=True, blank=True)
+    payment_status = models.CharField(
+        max_length=20,
+        default='PENDING',
+        choices=(
+            ('PENDING', 'Pending Payment'),
+            ('PAID', 'Paid'),
+            ('FAILED', 'Failed/Expired'),
+        )
+    )
 
     class Meta:
         verbose_name_plural = 'Appointments'

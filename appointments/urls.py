@@ -10,4 +10,5 @@ urlpatterns = [
     path('booking_confirmed/<uuid:booking_id>', views.bookingConfirmation,
          name="booking_confirmation"),
     path('api/calendar/events', views.calendar_events, name="calendar_events"),
+    path('checkout/create/<int:service_id>/', views.create_embedded_checkout, name="checkout"),
 ]
