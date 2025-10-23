@@ -33,11 +33,3 @@ class Appointments(models.Model):
         return f"{self.service.name} on {self.appointment_date} at\
         {self.appointment_time}"
 
-    def deposit_cost_calc(self):
-        deposit_percentage = 0.10
-
-        return self.service.price * deposit_percentage
-
-    def total_service_cost(self):
-
-        return self.service.price

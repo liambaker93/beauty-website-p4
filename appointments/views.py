@@ -7,7 +7,6 @@ from decimal import Decimal
 from .models import Appointments
 from .forms import BookingForm
 from services.models import ServicesList
-
 import stripe
 
 
@@ -57,24 +56,17 @@ def addAppointment(request, service_id):
     stripe_secret_key = settings.STRIPE_SECRET_KEY
 
     service = get_object_or_404(ServicesList, pk=service_id)
-    booking_form = BookingForm()
 
-    deposit_price = service.price / 5 * 100
+    deposit_cost = service.price / 5 * 100
+    stripe_cost = round(deposit_cost)
 
-    stripe_total = round(deposit_price)
     stripe.api_key = stripe_secret_key
     intent = stripe.PaymentIntent.create(
-        amount=stripe_total,
+        amount=stripe_cost,
         currency=settings.STRIPE_CURRENCY,
+        mode='payment',
+        ui_mode='embedded',
     )
-
-    template = 'appointments/add_appointment.html/'
-    context = {
-        'booking_form': booking_form,
-        'service': service,
-        'stripe_public_key': stripe_public_key,
-        'client_secret': intent.client_secret,
-    }
 
     if request.method == 'POST':
         booking_form = BookingForm(request.POST)
@@ -84,7 +76,7 @@ def addAppointment(request, service_id):
             pid = request.POST.get('client_secret').split('_secret')[0]
             new_booking.stripe_pid = pid
             new_booking.service = service
-            new_booking.deposit_cost = deposit_price
+            new_booking.deposit_cost = stripe_cost
 
             selected_time = booking_form.cleaned_data['appointment_time']
             selected_date = booking_form.cleaned_data['appointment_date']
@@ -95,29 +87,41 @@ def addAppointment(request, service_id):
             ).exists()
 
             if is_duplicate:
-                error_message = f"Booking failed. The slot on \
-                {selected_date} at {selected_time} is already taken. \
-                    Please select another."
-                context.update({
-                    'error': error_message,
-                })
-                return render(request, template, context)
-
+                error_message = (f"Booking failed. The slot on \
+                    {selected_date} at {selected_time} is already \
+                        taken. Please select another.")
+            
             confirmation_message = (f"Booking successful! See you for \
-                                    {service.name} at \
-                                        {selected_time} on {selected_date}.")
+                {service.name} at {selected_time} on {selected_date}.")
+            
             if request.user.is_authenticated:
                 new_booking.user = request.user
             
-            new_booking.save()
 
-            new_booking_id = new_booking.booking_id
+            session = stripe.checkout.Session.create(
+                line_items=[{
+                    'price_data': {
+                        'currency': 'gbp',
+                    },
+                    'quantity': 1,
+                }],
+                mode='payment',
+                ui_mode='embedded',
+                return_url='appointments/booking_confirmed/return?session_id={CHECKOUT_SESSION_ID}',
+            )
 
-            return redirect('booking_confirmation', booking_id=new_booking_id)
-        else:
-            booking_form = BookingForm(initial={'service': service})
+            return JsonResponse(clientSecret=session.client_secret)
 
-    return render(request, template, context)
+        context = {
+            'booking_form': booking_form,
+            'service': service,
+            'client_secret': intent.client_secret,
+        }
+
+        return render(request, 'appointments/add_appointment.html', context)
+
+
+
 
 
 def bookingConfirmation(request, booking_id):
