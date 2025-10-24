@@ -117,7 +117,7 @@ def create_payment_intent(request, booking_id):
 
     stripe.api_key = settings.STRIPE_SECRET_KEY
     appointment = get_object_or_404(Appointments, pk=booking_id)
-    stripe_total = int(appointment.deposit_cost)
+    stripe_total = appointment.deposit_cost
 
     MINIMUM_AMOUNT = 50
 
@@ -142,7 +142,6 @@ def checkout_page(request, booking_id):
     
     appointment = get_object_or_404(Appointments, pk=booking_id)
     stripe_public_key = settings.STRIPE_PUBLIC_KEY
-    print(stripe_public_key)
     context = {
         'stripe_public_key': stripe_public_key,
         'appointment': appointment,
@@ -150,6 +149,7 @@ def checkout_page(request, booking_id):
     }
 
     return render(request, 'appointments/checkout.html', context)
+
 
 def booking_confirmation(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
