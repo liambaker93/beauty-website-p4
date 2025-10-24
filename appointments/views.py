@@ -56,7 +56,7 @@ def addAppointment(request, service_id):
     """
     service = get_object_or_404(ServicesList, pk=service_id)
     deposit_cost = service.price / 2
-    stripe_cost = int(deposit_cost * 100)
+    stripe_cost = int(deposit_cost)
 
     booking_form = BookingForm()
 
@@ -114,11 +114,15 @@ def addAppointment(request, service_id):
 def create_payment(request, booking_id):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     appointment = get_object_or_404(Appointments, pk=booking_id)
-    deposit_cost = appointment.service.price / 2
-    stripe_total = round(deposit_cost * 100)
+    stripe_total = appointment.deposit_cost
+
+    MINIMUM_AMOUNT = 50
+
+    if stripe_total < MINIMUM_AMOUNT:
+        stripe_total = MINIMUM_AMOUNT
 
     intent = stripe.PaymentIntent.create(
-        amount=int(stripe_total),
+        amount=stripe_total,
         currency='gbp',
     )
 
@@ -127,6 +131,7 @@ def create_payment(request, booking_id):
         'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
         'appointment': appointment,
         'booking_id': booking_id,
+        'stripe_total': stripe_total,
     }
 
     return render(request, 'appointments/checkout.html', context)
