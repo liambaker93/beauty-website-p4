@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
+
 {% load static %}
 
+{% block content %}
 <div class="row">
     <div class="col">
         <form id="payment-form" method="GET" action="{% url 'checkout' booking.id %}">
             <input type="hidden" value="{{ stripe_public_key }}" name="id_stripe_public_key">
             <input type="hidden" value="{{ client_secret }}" name="id_client_secret">
             <div id="payment-element">
+                <p>Hi</p>
                 <div>{{ service.name }}</div>
                 <div>{{ service.price }}</div>
                 <div></div>
@@ -19,6 +22,8 @@
         </form>
     </div>
 </div>
+
+{% endblock %}
 {% block postloadjs %}
 {{ block.super }}
 {{ stripe_public_key|json_script:"id_stripe_public_key" }}

@@ -93,8 +93,9 @@ def addAppointment(request, service_id):
 
             new_booking.save()
 
-            return redirect('checkout', booking_id=new_booking.id)
+            return redirect('checkout', booking_id=new_booking.booking_id)
         else:
+            print("Form is NOT valid. Errors:", booking_form.errors)
             booking_form = BookingForm(initial={'service': service,
                                                 'deposit_cost': stripe_cost})
 
@@ -123,10 +124,10 @@ def create_payment(request, booking_id):
         'client_secret': intent.client_secret,
         'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
         'appointment': appointment,
-        'booking_id': booking_id,
+        'booking_id': appointment.booking_id,
     }
 
-    return render(request, 'checkout', context)
+    return render(request, 'appointments/checkout.html', context)
 
 
 def calendar_events(request):
