@@ -1,18 +1,32 @@
 {% extends 'base.html' %}
 
 {% load static %}
-
+{% block extra_title %}
+Checkout 
+{% endblock %}
 {% block content %}
+<div class="container">
 <div class="row">
+    <div class="col-3">
+        <div>Service: </div>
+        <div>Cost: </div>
+        <div>Time: </div>
+        <div>Date: </div>
+        <div>Deposit: </div>
+    </div>
+    <div class="col-3">
+                        
+        <div>{{ appointment.service.name }}</div>
+        <div>{{ appointment.service.price }}</div>
+        <div>{{ appointment.appointment_time }}</div>
+        <div>{{ appointment.appointment_date }}</div>
+        <div>{{ appointment.deposit_cost }}</div>
+    </div>
     <div class="col">
-        <form id="payment-form" method="GET" action="{% url 'checkout' booking.id %}">
+        <form id="payment-form" method="GET" action="{% url 'checkout' appointment.booking_id %}" id="{{ appointment.booking_id }}">
             <input type="hidden" value="{{ stripe_public_key }}" name="id_stripe_public_key">
             <input type="hidden" value="{{ client_secret }}" name="id_client_secret">
             <div id="payment-element">
-                <p>Hi</p>
-                <div>{{ service.name }}</div>
-                <div>{{ service.price }}</div>
-                <div></div>
             </div>
             <button id="submit">
                 <div class="spinner hidden" id="spinner"></div>
@@ -22,6 +36,7 @@
         </form>
     </div>
 </div>
+</div>
 
 {% endblock %}
 {% block postloadjs %}
@@ -30,5 +45,6 @@
 {{ client_secret|json_script:"id_client_secret" }}
 {{ service.name|json_script:"service_name" }}
 {{ service.price|json_script:"service_price" }}
+{{ booking_id|json_script:"appointment.booking_id" }}
 <script src="{% static 'appointments/js/checkout.js' %}"></script>
 {% endblock %}

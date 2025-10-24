@@ -1,7 +1,8 @@
 const stripePublicKey = $('#id_stripe_public_key').text().slice(1, -1);
 const clientSecret = $('#id_client_secret').text().slice(1, -1);
 const stripe = Stripe(stripePublicKey);
-
+const bookingId = $('#appointment.booking_id').text().slice(1, -1);
+console.log(bookingId)
 var servicePrice = $('#service_price').text().slice(1, -1);
 var serviceName = $('#service_name').text().slice(1, -1);
 
@@ -16,12 +17,11 @@ document
     .addEventListener("submit", handleSubmit);
 
 async function initialize() {
-    const response = await fetch("/checkout/", {
+    const response = await fetch(`/checkout/${bookingId}/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items }),
     });
-    const { clientSecret } = await response.json();
 
     const appearance = {
         theme: 'stripe',

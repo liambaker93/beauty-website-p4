@@ -124,7 +124,7 @@ def create_payment(request, booking_id):
         'client_secret': intent.client_secret,
         'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
         'appointment': appointment,
-        'booking_id': appointment.booking_id,
+        'booking_id': booking_id,
     }
 
     return render(request, 'appointments/checkout.html', context)
