@@ -174,3 +174,4 @@ STRIPE_CURRENCY = 'gbp'
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
 DEFAULT_FROM_EMAIL = 'emmabeautyspa@example.com'
+STRIPE_WH_SECRET = os.getenv('STRIPE_WH_SECRET', '')

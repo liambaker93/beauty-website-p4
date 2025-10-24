@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .webhooks import webhook_view
 
 urlpatterns = [
     path('', views.appointmentsPage, name="appointments"),
@@ -9,4 +10,5 @@ urlpatterns = [
          name="add_appointment"),
     path('api/calendar/events', views.calendar_events, name="calendar_events"),
     path('checkout/<uuid:booking_id>/', views.create_payment, name="checkout"),
+    path('webhook', webhook_view, name="webhook"),
 ]

@@ -1,10 +1,13 @@
 const stripePublicKey = $('#id_stripe_public_key').text().slice(1, -1);
 const clientSecret = $('#id_client_secret').text().slice(1, -1);
 const stripe = Stripe(stripePublicKey);
-const bookingId = $('#appointment.booking_id').text().slice(1, -1);
-console.log(bookingId)
-var servicePrice = $('#service_price').text().slice(1, -1);
-var serviceName = $('#service_name').text().slice(1, -1);
+const bookingIdElement = document.getElementById('id_appointment_id');
+const bookingIdValue = bookingIdElement.textContent;
+const bookingId = JSON.parse(bookingIdValue);
+console.log(bookingId);
+var servicePrice = $('#id_service_price').text().slice(1, -1);
+var serviceName = $('#id_service_name').text().slice(1, -1);
+console.log(serviceName, servicePrice);
 
 const items = [{ id: serviceName, amount: servicePrice }];
 
@@ -17,9 +20,14 @@ document
     .addEventListener("submit", handleSubmit);
 
 async function initialize() {
-    const response = await fetch(`/checkout/${bookingId}/`, {
+    const CSRFToken = $('input[name="csrfmiddlewaretoken"]').val();
+    const response = await fetch(`/appointments/checkout/${bookingId}/`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+            "Content-Type": "application/json",
+            "X-CSRFToken": CSRFToken,
+        },
+        
         body: JSON.stringify({ items }),
     });
 
@@ -38,21 +46,14 @@ async function initialize() {
 
 async function handleSubmit(e) {
     e.preventDefault();
-    setLoading(true);
+
+    const returnUrl = window.location.origin;
 
     const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-            return_url: "appointments/appointments.html",
+            return_url: returnUrl
         },
     });
-
-    if (error.type === "card_error" || error.type === "validation_error") {
-        showMessage(error.message);
-    } else {
-        showMessage("An unexpected error occurred.");
-    }
-
-    setLoading(false);
-}
+};
 

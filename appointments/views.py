@@ -114,9 +114,10 @@ def addAppointment(request, service_id):
 def create_payment(request, booking_id):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     appointment = get_object_or_404(Appointments, pk=booking_id)
+    stripe_total = appointment.deposit_cost
 
     intent = stripe.PaymentIntent.create(
-        amount=1000,
+        amount=stripe_total,
         currency='gbp',
     )
 

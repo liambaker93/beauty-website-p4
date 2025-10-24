@@ -4,7 +4,7 @@
 Bookings
 {% endblock %}
 {% block extracss %}
-<link href="{% static 'css/calendar_style.css' %}" rel="stylesheet">
+<link href="{% static 'appointments/css/calendar_style.css' %}" rel="stylesheet">
 {% endblock %}
 {% block extra_js %}
 <script>
@@ -12,7 +12,7 @@ Bookings
     const eventUser = '{{ request.user.is_authenticated|yesno:"request.user.pk" }}';
     const eventSuperUser = '{{ request.user.is_superuser|yesno:"true,false" }}';
 </script>
-<script src="{% static 'js/calendar_detail.js' %}"></script>
+<script src="{% static 'appointments/js/calendar_detail.js' %}"></script>
 {% endblock %}
 {% block content %}
 <div id="calendar">
