@@ -93,7 +93,7 @@ def addAppointment(request, service_id):
 
             new_booking.save()
 
-            return redirect('checkout', booking_id=new_booking.booking_id)
+            return redirect('checkout_page', booking_id=new_booking.booking_id)
         else:
             print("Form is NOT valid. Errors:", booking_form.errors)
             booking_form = BookingForm(initial={'service': service,
@@ -111,30 +111,74 @@ def addAppointment(request, service_id):
     return render(request, template, context)
 
 
-def create_payment(request, booking_id):
+def create_payment_intent(request, booking_id):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
     stripe.api_key = settings.STRIPE_SECRET_KEY
     appointment = get_object_or_404(Appointments, pk=booking_id)
-    stripe_total = appointment.deposit_cost
+    stripe_total = int(appointment.deposit_cost)
 
     MINIMUM_AMOUNT = 50
 
     if stripe_total < MINIMUM_AMOUNT:
+        messages.warning(request, f"Deposit is below \
+                        Stripe minimum ({MINIMUM_AMOUNT / 100})\
+                        Amount set to minimum for testing.")
         stripe_total = MINIMUM_AMOUNT
+    try:
+        intent = stripe.PaymentIntent.create(
+            amount=stripe_total,
+            currency='gbp',
+            metadata={'booking_id': booking_id}
+        )
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
-    intent = stripe.PaymentIntent.create(
-        amount=stripe_total,
-        currency='gbp',
-    )
+    return JsonResponse({'clientSecret': intent.client_secret})
 
+
+def checkout_page(request, booking_id):
+    
+    appointment = get_object_or_404(Appointments, pk=booking_id)
+    stripe_public_key = settings.STRIPE_PUBLIC_KEY
+    print(stripe_public_key)
     context = {
-        'client_secret': intent.client_secret,
-        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+        'stripe_public_key': stripe_public_key,
         'appointment': appointment,
         'booking_id': booking_id,
-        'stripe_total': stripe_total,
     }
 
     return render(request, 'appointments/checkout.html', context)
+
+def booking_confirmation(request):
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+
+    payment_intent_id = request.GET.get('payment_intent')
+
+    if not payment_intent_id:
+        return render(request, 'appointments/appointments.html', {'message': 'Invalid payment confirmation link.'})
+    
+    try:
+        intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+
+        if intent.status == 'succeeded':
+            print("Payment")
+            booking_id = intent.metadata.get('booking_id')
+
+            context = {
+                'intent': intent,
+                'booking_id': booking_id,
+            }
+
+            return render(request, 'appointments/booking_confirmed.html', context)
+        
+        elif intent.status in ['requires_payment_method', 'requires_confirmation', 'requires_action']:
+            return redirect('checkout_page', booking_id=intent.metadata.get('booking_id'))
+        else:
+            return render(request, 'appointments/appointments.html', {'intent': intent})
+    except stripe.error.StripeError as e:
+        return render(request, 'appointments/appointments.html', {'message': f"Stripe Error: {e.user_message}"})
 
 
 def calendar_events(request):

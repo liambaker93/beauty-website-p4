@@ -1,15 +1,10 @@
 const stripePublicKey = $('#id_stripe_public_key').text().slice(1, -1);
-const clientSecret = $('#id_client_secret').text().slice(1, -1);
 const stripe = Stripe(stripePublicKey);
+
 const bookingIdElement = document.getElementById('id_appointment_id');
 const bookingIdValue = bookingIdElement.textContent;
 const bookingId = JSON.parse(bookingIdValue);
 console.log(bookingId);
-var servicePrice = $('#id_service_price').text().slice(1, -1);
-var serviceName = $('#id_service_name').text().slice(1, -1);
-console.log(serviceName, servicePrice);
-
-const items = [{ id: serviceName, amount: servicePrice }];
 
 let elements;
 
@@ -21,20 +16,27 @@ document
 
 async function initialize() {
     const CSRFToken = $('input[name="csrfmiddlewaretoken"]').val();
-    const response = await fetch(`/appointments/checkout/${bookingId}/`, {
+    const response = await fetch(`/appointments/checkout_intent/${bookingId}/`, {
         method: "POST",
         headers: { 
             "Content-Type": "application/json",
             "X-CSRFToken": CSRFToken,
         },
         
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({ booking_id: bookingId }),
     });
+
+    if (!response.ok) {
+        console.error("Failed to create payment intent on server.");
+        return;
+    }    
+
+    const { clientSecret: freshClientSecret } = await response.json();
 
     const appearance = {
         theme: 'stripe',
     };
-    elements = stripe.elements({ appearance, clientSecret });
+    elements = stripe.elements({ appearance, clientSecret: freshClientSecret });
 
     const paymentElementOptions = {
         layout: "accordion",
@@ -47,7 +49,7 @@ async function initialize() {
 async function handleSubmit(e) {
     e.preventDefault();
 
-    const returnUrl = window.location.origin;
+    const returnUrl = window.location.origin + '/appointments/booking_confirmed/';
 
     const { error } = await stripe.confirmPayment({
         elements,
@@ -55,5 +57,11 @@ async function handleSubmit(e) {
             return_url: returnUrl
         },
     });
+
+    if (error.type === "card_error" || error.type === "validation_error") {
+        console.error(error.message);
+    } else {
+        console.error("An unexpected error occured.", error);
+    }
 };
 

@@ -15,7 +15,7 @@ Checkout
         <div>Deposit: </div>
     </div>
     <div class="col-3">
-                        
+               
         <div>{{ appointment.service.name }}</div>
         <div>{{ appointment.service.price }}</div>
         <div>{{ appointment.appointment_time }}</div>
@@ -23,7 +23,7 @@ Checkout
         <div>{{ appointment.deposit_cost }}</div>
     </div>
     <div class="col">
-        <form id="payment-form" method="POST" action="{% url 'checkout' appointment.booking_id %}">
+        <form id="payment-form" method="POST" action="{% url 'checkout_page' appointment.booking_id %}">
             {% csrf_token %}
             <input type="hidden" value="{{ stripe_public_key }}" name="id_stripe_public_key">
             <input type="hidden" value="{{ client_secret }}" name="id_client_secret">
@@ -45,7 +45,7 @@ Checkout
 {{ stripe_public_key|json_script:"id_stripe_public_key" }}
 {{ client_secret|json_script:"id_client_secret" }}
 {{ appointment.service.name|json_script:"id_service_name" }}
-{{ appointment.service.price|json_script:"id_service_price" }}
+{{ appointment.deposit_cost|json_script:"id_deposit_price" }}
 {{ appointment.booking_id|json_script:"id_appointment_id" }}
 <script src="{% static 'appointments/js/checkout.js' %}"></script>
 {% endblock %}

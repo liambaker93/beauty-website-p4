@@ -9,6 +9,8 @@ urlpatterns = [
     path('add_appointment/<int:service_id>/', views.addAppointment,
          name="add_appointment"),
     path('api/calendar/events', views.calendar_events, name="calendar_events"),
-    path('checkout/<uuid:booking_id>/', views.create_payment, name="checkout"),
+    path('checkout/<uuid:booking_id>/', views.checkout_page, name="checkout_page"),
+    path('checkout_intent/<uuid:booking_id>/', views.create_payment_intent, name="create_payment_intent"),
+    path('booking_confirmed/', views.booking_confirmation, name="booking_confirmed"),
     path('webhook', webhook_view, name="webhook"),
 ]
