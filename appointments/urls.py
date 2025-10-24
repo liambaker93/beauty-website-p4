@@ -7,8 +7,6 @@ urlpatterns = [
     path('view_orders/', views.viewOrders, name="view_orders"),
     path('add_appointment/<int:service_id>/', views.addAppointment,
          name="add_appointment"),
-    path('booking_confirmed/<uuid:booking_id>', views.bookingConfirmation,
-         name="booking_confirmation"),
     path('api/calendar/events', views.calendar_events, name="calendar_events"),
-    path('checkout/create/<int:service_id>/', views.create_embedded_checkout, name="checkout"),
+    path('checkout/<uuid:booking_id>/', views.create_payment, name="checkout"),
 ]

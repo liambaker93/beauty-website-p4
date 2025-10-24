@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<div class="row">
+    <div class="col">
+        <form id="payment-form" method="GET" action="{% url 'checkout' booking.id %}">
+            <input type="hidden" value="{{ stripe_public_key }}" name="id_stripe_public_key">
+            <input type="hidden" value="{{ client_secret }}" name="id_client_secret">
+            <div id="payment-element">
+                <div>{{ service.name }}</div>
+                <div>{{ service.price }}</div>
+                <div></div>
+            </div>
+            <button id="submit">
+                <div class="spinner hidden" id="spinner"></div>
+                <span id="button-text">Pay now</span>
+            </button>
+            <div id="payment-message" class="hidden"></div>
+        </form>
+    </div>
+</div>
+{% block postloadjs %}
+{{ block.super }}
+{{ stripe_public_key|json_script:"id_stripe_public_key" }}
+{{ client_secret|json_script:"id_client_secret" }}
+{{ service.name|json_script:"service_name" }}
+{{ service.price|json_script:"service_price" }}
+<script src="{% static 'appointments/js/checkout.js' %}"></script>
+{% endblock %}

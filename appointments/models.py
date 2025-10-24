@@ -19,8 +19,9 @@ class Appointments(models.Model):
     user_phone = models.CharField(null=True, max_length=20, blank=True)
     deposit_cost = models.DecimalField(
         max_digits=6, decimal_places=2, null=False, default=0)
-    booking_id = models.UUIDField(
-        default=uuid.uuid4, editable=False, unique=True)
+    booking_id = models.UUIDField(primary_key=True,
+                                  default=uuid.uuid4, editable=False,
+                                  unique=True)
     final_cost = models.DecimalField(
         max_digits=6, decimal_places=2, null=False, default=0, editable=False)
     stripe_session_id = models.CharField(max_length=250, null=True, blank=True)
