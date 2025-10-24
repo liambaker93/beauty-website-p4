@@ -7,9 +7,11 @@ const bookingId = JSON.parse(bookingIdValue);
 console.log(bookingId);
 var servicePrice = $('#id_service_price').text().slice(1, -1);
 var serviceName = $('#id_service_name').text().slice(1, -1);
+const servicePriceFloat = parseFloat(servicePrice);
+const servicePriceStripe = Math.round(servicePriceFloat * 100);
 console.log(serviceName, servicePrice);
 
-const items = [{ id: serviceName, amount: servicePrice }];
+const items = [{ id: serviceName, amount: servicePriceStripe }];
 
 let elements;
 
