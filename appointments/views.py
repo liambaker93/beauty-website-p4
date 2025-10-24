@@ -56,7 +56,7 @@ def addAppointment(request, service_id):
     """
     service = get_object_or_404(ServicesList, pk=service_id)
     deposit_cost = service.price / 2
-    stripe_cost = Decimal(deposit_cost, 2)
+    stripe_cost = int(deposit_cost * 100)
 
     booking_form = BookingForm()
 
