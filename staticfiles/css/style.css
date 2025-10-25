@@ -10,25 +10,21 @@
 /* CSS Colour variables, hexes provided by Coolors */
 
 :root {
-    --earth-yellow: #EABE7C;
-    --midnight-green: #07393C;
-    --eggplant: #74546A;
-    --china-rose: #B56576;
-    --silver-lake-blue: #6290C8;
+    --duck-green: #0B7A75;
+    --dark-red: #7B2D26;
 }
 
 /* Global Styles */
 
 body {
     font-family: var(--primary-font);
-    color: var(--china-rose);
+    color: var(--dark-red);
 }
 
 /* Nav Bar Styles */
 
-.navbar-style {
-    background-color: var(--midnight-green) !important;
-    color: var(--eggplant) !important;
+nav {
+    background-color: var(--duck-green) !important;
 }
 
 /* Index page styles */

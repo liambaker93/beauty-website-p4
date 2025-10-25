@@ -1,0 +1,6 @@
+.homepage-image {
+    display: flex;
+    height: 25em;
+    width: 100vh;
+    align-content: end;
+}
