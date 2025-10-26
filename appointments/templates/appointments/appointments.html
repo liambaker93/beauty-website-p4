@@ -32,6 +32,7 @@ Appointments
                     <p>{{ booking.appointment_date }} at {{ booking.appointment_time }}</p>
                 </div>
             </div>
+            <a class="btn btn-secondary" href="{% url 'edit_appointment' booking.booking_id %}">Edit Appointment</a>
             {% endfor %}
     </div>
     </div>

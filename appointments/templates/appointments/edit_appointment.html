@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block extracss %}
+<link href="{% static 'appointments/css/checkout.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extra_title %}
+Appointments
+{% endblock %}
+{% block content %}
+<div class="row service-header text-center">
+    <div class="col">
+        <h1>Make a Booking:</h1>
+    </div>
+</div>
+<div class="row">
+<div class=" d-flex col-6 justify-content-center form-fields">
+    <form method="POST" action="{% url 'edit_appointment' appointment.booking_id %}" class="booking_form mb-2" enctype="multipart/form-data" id="booking-form">
+        {% csrf_token %}
+        {{ booking_form.service | as_crispy_field }}
+        {{ booking_form.appointment_time | as_crispy_field }}
+        {{ booking_form.appointment_date | as_crispy_field }}
+        {{ booking_form.deposit_cost | as_crispy_field }}
+        {{ booking_form.user_name | as_crispy_field }}
+        {{ booking_form.user_email | as_crispy_field }}
+        {{ booking_form.user_phone | as_crispy_field }}
+        <div>
+            <div class="text-danger" id="card-errors" role="alert"></div>
+            <a class="btn btn-secondary" href="{% url 'services' %}">Cancel</a>
+            <button class="btn btn-primary" type="submit">Adjust Booking</button>
+        </div>
+    </form>
+</div>
+<div id="checkout-container" style="display: none;">
+    <h2>Confirm Payment</h2>
+    <div id="checkout">
+
+    </div>
+</div>
+</div>
+
+
+{% endblock %}

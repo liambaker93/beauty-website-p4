@@ -20,22 +20,25 @@ def appointmentsPage(request):
     Displays to staff a list of bookings made by all users.
     """
     user = request.user
-    all_bookings = Appointments.objects.all().order_by(
-        'appointment_date', 'appointment_time')
-    user_bookings = Appointments.objects.filter(user=user).order_by(
-        'appointment_date', 'appointment_time')
+
     template = 'appointments/appointments.html'
 
     if user.is_authenticated:
         if user.is_staff:
+            all_bookings = Appointments.objects.all().order_by(
+        'appointment_date', 'appointment_time')
             context = {
                 'bookings': all_bookings,
             }
         else:
+            user_bookings = Appointments.objects.filter(user=user).order_by(
+        'appointment_date', 'appointment_time')
             context = {
                 'bookings': user_bookings,
             }
         return render(request, template, context)
+    else:
+        return render(request, template)
 
 
 def fullCalendar(request):
@@ -230,3 +233,31 @@ def calendar_events(request):
         })
 
     return JsonResponse(events, safe=False)
+
+
+def edit_appointment(request, booking_id):
+    """
+    A view for allowing a user to edit a booking they've made
+    """
+    appointment = get_object_or_404(Appointments, pk=booking_id)
+
+    if request.method == 'POST':
+        booking_form = BookingForm(request.POST, instance=appointment)
+        if booking_form.is_valid():
+            booking_form.save()
+
+            return redirect(reverse('appointments'))
+
+        else:
+            (request, "Failed to update Booking. \
+                Please ensure the form is valid.")
+    else:
+        booking_form = BookingForm(instance=appointment)
+
+    template = 'appointments/edit_appointment.html'
+    context = {
+        'booking_form': booking_form,
+        'appointment': appointment,
+    }
+
+    return render(request, template, context)
