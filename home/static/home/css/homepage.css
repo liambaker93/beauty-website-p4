@@ -1,6 +1,16 @@
 .homepage-image {
-    display: flex;
     height: 25em;
-    width: 100vh;
-    align-content: end;
+    width: 100%;
+}
+
+/* Index page styles */
+
+.home-box {
+    max-height: fit-content;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+.service-header {
+    margin-top: 25px;
 }

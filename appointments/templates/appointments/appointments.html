@@ -3,6 +3,11 @@
 {% load static %}
 
 {% block extra_js %}
+<script>
+    window.AppUrls = {
+        calendarFeed: "{% url 'calendar_feed' %}",
+    };
+</script>
 <script src="{% static 'appointments/js/calendar.js' %}"></script>
 {% endblock %}
 

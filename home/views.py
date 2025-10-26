@@ -62,17 +62,35 @@ def closest_appointment(request):
 def calendar_feed(request):
     appointments = Appointments.objects.all()
 
-    events = []
-    for appointment in appointments:
-        appointment_date = appointment.appointment_date
+    if request.user.is_staff:
+        events = []
+        for appointment in appointments:
+            appointment_date = appointment.appointment_date
+            appointment_time = appointment.appointment_time
 
-        events.append({
-            'title': 'Booked',
-            'start': appointment_date.strftime('%Y-%m-%d'),
-            'display': 'background',
-            'color': '#f0ad4e',
-        })
+            events.append({
+                'title': f"{appointment.service.name} at {appointment_time}",
+                'start': appointment_date.strftime('%Y-%m-%d'),
+                'display': 'background',
+                'color': '#07393C',
+            })
 
-    return JsonResponse(events, safe=False)
+        return JsonResponse(events, safe=False)
+
+    else:
+        events = []
+        for appointment in appointments:
+            appointment_date = appointment.appointment_date
+            appointment_time = appointment.appointment_time
+
+            events.append({
+                'title': 'Booked',
+                'start': appointment_date.strftime('%Y-%m-%d'),
+                'time': appointment_time,
+                'display': 'background',
+                'color': '#07393C',
+            })
+
+        return JsonResponse(events, safe=False)
 
 

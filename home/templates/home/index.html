@@ -29,16 +29,18 @@ Homepage
 <!--Hero Image-->
 
 <!--Main content-->
-<div class="container-fluid">
-    <div class="row">
+<div class="row">
+    <div class="col-6">
         <img class="homepage-image" src="{{ MEDIA_URL }}homepage_lavender.jpg" alt="candles on a table">
-    </div>
-    <div class="row">
-        <div class="col-4 home-box border">
+        </div>
+    <div class="col-6 border">
             <h2>Welcome to Emma's website</h2>
             <p>Here we have so much information</p>
         </div>
-        <div class="col-4">
+    </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6">
             {% include 'home/random_service.html' %}
             <div class="row border h-100 home-box">
             {% if user.is_authenticated %}
@@ -54,7 +56,7 @@ Homepage
                 <p>Highlights of what people have said</p>
             </div>
         </div>
-        <div class="col-4 border">
+        <div class="col-6 border home-box">
             <h2>Know a date? Check availability</h2>
             <br>
             <div id="calendar"></div>
