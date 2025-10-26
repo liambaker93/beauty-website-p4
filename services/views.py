@@ -71,7 +71,7 @@ def addNewService(request):
     """
     # add blank space validation
     if not request.user.is_staff:
-        messages.success(request, "Sorry, only the store owner can do that!")
+        messages.error(request, "Sorry, only the store owner can do that!")
         return redirect(reverse('services'))
 
     if request.method == 'POST':
@@ -81,7 +81,7 @@ def addNewService(request):
             messages.success(request, "Successfully added service!")
             return redirect(reverse('services'))
         else:
-            messages.success
+            messages.error
             (request, "Adding service failed. "
                 "Please ensure the form is valid.")
     else:
