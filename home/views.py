@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.utils import timezone
 import random
+from django.http import JsonResponse
+from datetime import date
 from services.models import ServicesList
 from appointments.models import Appointments
 
@@ -55,3 +57,22 @@ def closest_appointment(request):
     }
 
     return render(request, 'home/index.html', context)
+
+
+def calendar_feed(request):
+    appointments = Appointments.objects.all()
+
+    events = []
+    for appointment in appointments:
+        appointment_date = appointment.appointment_date
+
+        events.append({
+            'title': 'Booked',
+            'start': appointment_date.strftime('%Y-%m-%d'),
+            'display': 'background',
+            'color': '#f0ad4e',
+        })
+
+    return JsonResponse(events, safe=False)
+
+

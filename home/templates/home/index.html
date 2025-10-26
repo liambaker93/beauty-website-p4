@@ -12,6 +12,8 @@
           hiddenDays: [0],
           selectable: true,
 
+          events: '{% url "calendar_feed" %}',
+
           select: function(start, end, alldays) {
             window.location.href = 'appointments/calendar_detail';
           }
@@ -28,7 +30,7 @@ Homepage
 
 <!--Main content-->
 <div class="container-fluid">
-    <div class="row homepage-image">
+    <div class="row">
         <img class="homepage-image" src="{{ MEDIA_URL }}homepage_lavender.jpg" alt="candles on a table">
     </div>
     <div class="row">
