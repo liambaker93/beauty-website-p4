@@ -13,7 +13,7 @@
         {{ form | crispy }}
         <div>
             <a class="btn btn-secondary" href="{% url 'services' %}">Cancel</a>
-            <button class="btn btn-primary" type="submit">Add Service</button>
+            <button class="btn btn-primary" type="submit" id="submit">Add Service</button>
             <a type="button" class="btn btn-primary" href="{% url 'add_new_category' %}">Need a new category?</a>
         </div>
     </form>
