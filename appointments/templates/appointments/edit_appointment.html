@@ -27,7 +27,7 @@ Appointments
         {{ booking_form.user_phone | as_crispy_field }}
         <div>
             <div class="text-danger" id="card-errors" role="alert"></div>
-            <a class="btn btn-secondary" href="{% url 'services' %}">Cancel</a>
+            <a class="btn btn-secondary" href="{% url 'appointments' %}">Cancel</a>
             <button class="btn btn-primary" type="submit">Adjust Booking</button>
         </div>
     </form>

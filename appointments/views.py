@@ -261,3 +261,18 @@ def edit_appointment(request, booking_id):
     }
 
     return render(request, template, context)
+
+
+def delete_appointment(request, booking_id):
+    """
+    Ability for users to delete appointments they've made
+    """
+    appointment = get_object_or_404(Appointments, pk=booking_id)
+
+    if request.user != appointment.user:
+        messages.error(request, "Sorry, you can only delete your own bookings!")
+        return redirect(reverse('appointments'))
+    else:
+        appointment.delete()
+        messages.success(request, 'Booking has been cancelled!')
+        return redirect(reverse('appointments'))
