@@ -14,3 +14,9 @@
 .service-header {
     margin-top: 25px;
 }
+
+.service-image {
+    height: 100%;
+    width: 100%;
+    position: sticky;
+}

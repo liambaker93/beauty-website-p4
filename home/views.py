@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.utils import timezone
 import random
 from django.http import JsonResponse
-from datetime import date
+from datetime import datetime, timedelta
 from services.models import ServicesList
 from appointments.models import Appointments
 
@@ -60,37 +60,40 @@ def closest_appointment(request):
 
 
 def calendar_feed(request):
-    appointments = Appointments.objects.all()
+    start_date_str = request.GET.get('start')
+    end_date_str = request.GET.get('end')
 
-    if request.user.is_staff:
-        events = []
-        for appointment in appointments:
-            appointment_date = appointment.appointment_date
-            appointment_time = appointment.appointment_time
+    try:
+        start_date = datetime.fromisoformat(start_date_str.replace('Z', '+00:00'))
+        end_date = datetime.fromisoformat(end_date_str.replace('Z', '+00:00'))
+    except (ValueError, TypeError):
+        return JsonResponse([], safe=False)
+    
+    bookings = Appointments.objects.filter(
+        appointment_date__gte=start_date.date(),
+        appointment_date__lt=end_date.date(),
+    )
 
-            events.append({
-                'title': f"{appointment.service.name} at {appointment_time}",
-                'start': appointment_date.strftime('%Y-%m-%d'),
-                'display': 'background',
-                'color': '#07393C',
-            })
+    if request.user.is_authenticated and not request.user.is_staff:
+        bookings = bookings.filter(user=request.user)
+    elif not request.user.is_authenticated:
+        return JsonResponse([], safe=False)
+    
+    events = []
+    for booking in bookings:
+        start_datetime = datetime.combine(booking.appointment_date, booking.appointment_time)
+        end_datetime = start_datetime + timedelta(hours=0.75)
 
-        return JsonResponse(events, safe=False)
+        color = '#07393C' if request.user.is_staff else '#4CAF50'
 
-    else:
-        events = []
-        for appointment in appointments:
-            appointment_date = appointment.appointment_date
-            appointment_time = appointment.appointment_time
+        events.append({
+            'title': f"{booking.service.name}",
+            'start': start_datetime.isoformat(),
+            'end': end_datetime.isoformat(),
+            'color': color,
+            'allDay': False,
+        })
 
-            events.append({
-                'title': 'Booked',
-                'start': appointment_date.strftime('%Y-%m-%d'),
-                'time': appointment_time,
-                'display': 'background',
-                'color': '#07393C',
-            })
-
-        return JsonResponse(events, safe=False)
+    return JsonResponse(events, safe=False)
 
 

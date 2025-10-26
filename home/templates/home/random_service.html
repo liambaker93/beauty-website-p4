@@ -2,12 +2,18 @@
 <div class="row border h-100 home-box">
     <div id="carouselExample" class="carousel slide">
   <div class="carousel-inner">
-    <h3>Checkout some highlighted services:</h3>
     {% for service in random_services %}
     <div class="carousel-item {% if forloop.first %}active{% endif %}">
-      <p>{{ service.name }}</p>
-      <p>{{ service.description }}</p>
-      <p>£{{ service.price }}</p>
+    
+    <h3>Checkout some highlighted services: {{ service.name }} | £{{ service.price }}</h3>
+      <div>
+      {% if service.image %}
+      <img class="service-image" src="{{ service.image.url }}">
+      {% endif %}
+      </div>
+      <div class="text-center">
+        <p>{{ service.description }}</p>
+      </div>
     </div>
     {% endfor %}
 
