@@ -80,7 +80,7 @@ def addAppointment(request, service_id):
             ).exists()
 
             if is_duplicate:
-                error_message = (f"Booking failed. The slot on \
+                error_message = messages.error(f"Booking failed. The slot on \
                                  {selected_date} at {selected_time} \
                                     is already taken. Please select another.")
                 context = {
@@ -98,7 +98,7 @@ def addAppointment(request, service_id):
 
             return redirect('checkout_page', booking_id=new_booking.booking_id)
         else:
-            print("Form is NOT valid. Errors:", booking_form.errors)
+            messages.error(request, f"Form is NOT valid. Errors: {booking_form.errors}")
             booking_form = BookingForm(initial={'service': service,
                                                 'deposit_cost': stripe_cost})
 
