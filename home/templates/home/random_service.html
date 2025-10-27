@@ -5,7 +5,7 @@
     {% for service in random_services %}
     <div class="carousel-item {% if forloop.first %}active{% endif %}">
     
-    <h3>Checkout some highlighted services: {{ service.name }} | £{{ service.price }}</h3>
+    <h3>Checkout some highlighted services: {{ service.category }} | {{ service.name }} | £{{ service.price }}</h3>
       <div>
       {% if service.image %}
       <img class="service-image" src="{{ service.image.url }}">
