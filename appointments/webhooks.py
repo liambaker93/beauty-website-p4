@@ -7,6 +7,7 @@ import stripe
 
 stripe.api_key = settings.STRIPE_PUBLIC_KEY
 
+
 @csrf_exempt
 def webhook_view(request):
     payload = request.body
@@ -16,7 +17,7 @@ def webhook_view(request):
         event = stripe.Event.construct_from(
             json.loads(payload), stripe.api_key
         )
-    except ValueError as e:
+    except ValueError:
         return HttpResponse(status=400)
 
     if event.type == 'payment_intent.succeeded':
@@ -34,7 +35,7 @@ def webhook_view(request):
 
             if appointment.final_cost < 0:
                 appointment.final_cost = 0
-            
+
             appointment.save()
         except Appointments.DoesNotExist:
             print(f"Error: Booking ID {booking_id} not found.")

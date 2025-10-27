@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from appointments.models import Appointments
 
 # Create your views here.
@@ -6,13 +6,15 @@ from appointments.models import Appointments
 
 def index(request):
     """
-    This view generates the orders made by a user ready to display on the account page.
+    This view generates the orders made by a user
+    ready to display on the account page.
     """
     template = 'useraccount/account.html'
     if request.user.is_authenticated:
         user_appointments = Appointments.objects.filter(
             user=request.user
-        ).select_related('service').order_by('appointment_date', 'appointment_time')
+        ).select_related('service').order_by(
+            'appointment_date', 'appointment_time')
 
         context = {
             'appointments': user_appointments,

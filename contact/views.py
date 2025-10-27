@@ -18,7 +18,9 @@ def contact(request):
             information_form.save()
             messages.success(request, "Thanks for getting in contact! \
                              I'll get back in touch as soon as I can.")
-            
+# This if statement adds the total submissions into the context
+# to then be used by the HTML templating to display them to
+# staff users.
     if request.user.is_staff:
         submissions = InformationRequest.objects.all()
 

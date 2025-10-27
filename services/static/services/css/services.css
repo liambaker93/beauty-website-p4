@@ -15,3 +15,11 @@
     flex-direction: column !important;
     justify-content: space-between !important;
 }
+
+@media screen and (max-width: 768px) {
+    .card-container {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+}

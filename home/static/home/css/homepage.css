@@ -1,6 +1,7 @@
 .homepage-image {
     height: 25em;
     width: 100%;
+    position: relative;
 }
 
 /* Index page styles */
@@ -19,4 +20,10 @@
     height: 100%;
     width: 100%;
     position: sticky;
+}
+
+@media screen and (max-width: 768px) {
+    .homepage-image {
+        width: 100%;
+    }
 }

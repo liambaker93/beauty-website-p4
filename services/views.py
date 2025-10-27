@@ -1,6 +1,5 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.contrib import messages
-from django.views import generic
 from django.db.models import Q
 from django.db.models.functions import Lower
 from .models import ServiceCategory, ServicesList
@@ -8,6 +7,7 @@ from appointments.models import Appointments
 from .forms import ServiceForm, ServiceCategoryForm
 
 # Create your views here.
+
 
 def services(request):
     """
@@ -98,7 +98,9 @@ def addNewService(request):
 
 def editService(request, service_id):
     """
-    Ability for the admin user to edit services on the website
+    Ability for the admin user to edit services on the website.
+    If non staff user tries to access, they are redirected 
+    and shown an error message detailing.
     """
     if not request.user.is_staff:
         messages.error(request, "Sorry, only the store owner can do that!")
@@ -130,7 +132,8 @@ def editService(request, service_id):
 
 def deleteService(request, service_id):
     """
-    Ability for the admin user to edit services on the website
+    Ability for the admin user to delete services on the website.
+    Displays an error if a non-staff user tries to access, and redirects.
     """
     if not request.user.is_staff:
         messages.error(request, "Sorry, only the store owner can do that!")
@@ -144,8 +147,9 @@ def deleteService(request, service_id):
         return redirect(reverse('services'))
     else:
         service.delete()
-        messages.success(request, f"Service: '{service.name}' has been deleted!")
-        
+        messages.success(request, f"Service: '{service.name}'\
+                          has been deleted!")
+
         return redirect(reverse('services'))
 
 

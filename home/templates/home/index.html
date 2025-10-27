@@ -29,23 +29,21 @@ Homepage
 <!--Hero Image-->
 
 <!--Main content-->
-<div class="row">
-    <div class="col-6">
-        <img class="homepage-image" src="{{ MEDIA_URL }}/homepage_lavender.jpg" alt="Lavender stems across a table.">
-        </div>
-    <div class="col-6 border">
-            <h2>Welcome to Aura and Bloom</h2>
+<h2 class="text-center mb-5">Welcome to Aura and Bloom</h2>
+<div class="container-fluid">
+<div class="row d-flex justify-content-center">
+
+    <div class="col-md-6 border text-center">
             <p>My name's Emma and welcome to Aura and Bloom.</p>
             <p>Here you will find a selection of treatments on offer.</p>
             <p>You can browse the menu and make an appointment, or get in contact on the contact page if you have a specific request!</p>
         </div>
     </div>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-6">
+    <div class="row d-flex">
+        <div class="col-md-6">
             {% include 'home/random_service.html' %}
         </div>
-        <div class="col-6 border home-box">
+        <div class="col-md-6 border home-box">
             <h2>Know a date? Check availability</h2>
             <br>
             <div id="calendar"></div>
