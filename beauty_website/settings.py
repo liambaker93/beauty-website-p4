@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['beauty-website-p4-717b16fd7429.herokuapp.com/',
+ALLOWED_HOSTS = ['https://beauty-website-p4-717b16fd7429.herokuapp.com/',
                  '.127.0.0.1',
                  ]
 
