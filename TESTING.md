@@ -65,6 +65,18 @@ The lighthouse scores were not great, accessibility was good throughout the site
 
 #### Further Tests
 
+I used Google Chrome to complete testing for various features within the site. 
+
+| Feature | Expected Outcome | Testing Performed | Result | Pass/Fail |
+| --- | ---- | ----- | --- | --- |
+| Selecting 'See the full menu' on the home page takes the user to the full service list. | Clicked on the button | Service page loads | Pass |
+| Category Filter | Selecting a category from the list will display only the relevant services. | Selected 'Waxing' category | Only waxes displayed | Pass |
+| Booking a Service | Selecting book now takes the user to the booking form | Selected 'Book Now' under Leg Waxing | Loads Booking form | Pass |
+| Reserving a service before payment | Selecting a time, date and service will then let a user book it | Filled in the fields | Loads payment screen | Pass |
+| Making payment | When card details are entered, payment is taken | Used Stripes test numbers to complete transaction | Booking confirmation screen loads, images below for process | Pass |
+| Contact Form | Submitting a contact form then goes to the staff to view | Filled in and submitted form | Form displayed for staff on contact page | Pass |
+| Edit Service | When staff want to edit a service, they are shown a form which will then update and save it. | Selected Edit on Manicure and adjust price to £12.99 from £10.99 | Pass |
+| Delete Service | When staff want to delete, they are given a warning and can then complete deletion. | Selected Delete on Eyebrows and confirmed. | Pass |
 
 
 
