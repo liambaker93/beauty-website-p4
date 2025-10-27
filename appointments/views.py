@@ -61,16 +61,10 @@ def addAppointment(request, service_id):
     deposit_cost = service.price / 2
     stripe_cost = int(deposit_cost)
 
-    initial_data = {
-        'service': service.name,
-        'user': request.user,
-        'deposit_cost': stripe_cost,
-    }
-
-    booking_form = BookingForm(initial=initial_data)
+    booking_form = BookingForm()
 
     if request.method == 'POST':
-        booking_form = BookingForm(request.POST, initial=initial_data)
+        booking_form = BookingForm(request.POST)
 
         if booking_form.is_valid():
             new_booking = booking_form.save(commit=False)
@@ -86,17 +80,16 @@ def addAppointment(request, service_id):
             ).exists()
 
             if is_duplicate:
-                error_message = messages.error(f"Booking failed. The slot on \
+                messages.error(request, f"Booking failed. The slot on \
                                  {selected_date} at {selected_time} \
                                     is already taken. Please select another.")
                 context = {
                     'booking_form': booking_form,
                     'service': service,
-                    'error': error_message,
                     'service_id': service_id,
                 }
                 return render(request, 'appointments/add_appointment.html', context)
-            
+
             if request.user.is_authenticated:
                 new_booking.user = request.user
 
