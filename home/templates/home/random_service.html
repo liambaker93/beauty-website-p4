@@ -4,7 +4,6 @@
   <div class="carousel-inner">
     {% for service in random_services %}
     <div class="carousel-item {% if forloop.first %}active{% endif %}">
-    
     <h3>Checkout some highlighted services: {{ service.category }} | {{ service.name }} | £{{ service.price }}</h3>
       <div>
       {% if service.image %}

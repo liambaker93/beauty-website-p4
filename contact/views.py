@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib import messages
 from .forms import ContactForm
+from .models import InformationRequest
 
 # Create your views here.
 
@@ -17,6 +18,17 @@ def contact(request):
             information_form.save()
             messages.success(request, "Thanks for getting in contact! \
                              I'll get back in touch as soon as I can.")
+            
+    if request.user.is_staff:
+        submissions = InformationRequest.objects.all()
+
+        information_form = ContactForm()
+        context = {
+            'information_form': information_form,
+            'submissions': submissions
+        }
+
+        return render(request, template, context)
 
     information_form = ContactForm()
 

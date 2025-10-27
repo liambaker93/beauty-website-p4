@@ -6,7 +6,7 @@ Contact Me!
 {% endblock %}
 {% block content %}
 <div class="container">
-    <div class="row">
+    <div class="row {% if not request.user.is_staff %}justify-content-center{% endif %}">
         <div class="col-6">
             <h1>Contact page</h1>
                 <form method="POST">
@@ -15,6 +15,15 @@ Contact Me!
                 <button class="btn btn-secondary" type="submit">Submit</button>
                 </form>
         </div>
+        {% if request.user.is_staff %}
+        
+        <div class="col-6">
+            {% for submission in submissions %}
+            <h3>{{ submission.name }} | {{ submission.email }}</h3>
+            <p>{{ submission.message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
