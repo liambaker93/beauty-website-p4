@@ -47,9 +47,9 @@ Services
                     <a class="btn btn-primary" style="width: 100%;" method="POST" href="{% url 'add_appointment' service.id %}">Book Now</a>
                     </div>
                     {% if user.is_staff %}
-                    <div class="card-subtitle" style="width: 100%;">
-                        <a class="btn btn-secondary user-buttons" method="POST" href="{% url 'edit_service' service.id %}">Edit Service</a>
-                        <a class="btn btn-danger user-buttons" href="{% url 'delete_service' service.id %}" onclick="return confirm('Are you sure you want to delete {{ service.name }}?')">Delete Service</a>
+                    <div class="card-subtitle mt-2 d-flex justify-content-around" style="width: 100%;">
+                        <button class="btn btn-secondary" method="POST" href="{% url 'edit_service' service.id %}">Edit Service</button>
+                        <button class="btn btn-danger" href="{% url 'delete_service' service.id %}" onclick="return confirm('Are you sure you want to delete {{ service.name }}?')">Delete Service</button>
                     </div>
                     {% endif %}
             </div>           

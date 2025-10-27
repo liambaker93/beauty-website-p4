@@ -7,7 +7,7 @@
     <h3>Checkout some highlighted services: {{ service.category }} | {{ service.name }} | £{{ service.price }}</h3>
       <div>
       {% if service.image %}
-      <img class="service-image" src="{{ service.image.url }}">
+      <img class="service-image" src="{{ service.image.url }}" alt="{{ service.name }}">
       {% endif %}
       </div>
       <div class="text-center">

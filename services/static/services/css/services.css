@@ -10,12 +10,6 @@
     width: 100%;
 }
 
-.user-buttons {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-}
-
 @media screen and (max-width: 768px) {
     .card-container {
         display: flex !important;
