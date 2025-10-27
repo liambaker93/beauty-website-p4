@@ -149,7 +149,6 @@ def deleteService(request, service_id):
         return redirect(reverse('services'))
 
 
-
 def addNewCategory(request):
     """
     Ability for admin user to add a new category
@@ -158,7 +157,7 @@ def addNewCategory(request):
     """
     if not request.user.is_staff:
         messages.error(request, "Sorry, only the store owner can do that!")
-        return redirect(reverse('home'))
+        return redirect(reverse('services'))
 
     if request.method == 'POST':
         form = ServiceCategoryForm(request.POST, request.FILES)
