@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.db.models.functions import Lower
 from .models import ServiceCategory, ServicesList
+from appointments.models import Appointments
 from .forms import ServiceForm, ServiceCategoryForm
 
 # Create your views here.
@@ -134,11 +135,19 @@ def deleteService(request, service_id):
     if not request.user.is_staff:
         messages.error(request, "Sorry, only the store owner can do that!")
         return redirect(reverse('services'))
-    print(f"Service being deleted is: {service_id}")
     service = get_object_or_404(ServicesList, pk=service_id)
-    service.delete()
-    messages.success(request, 'Service Deleted!')
-    return redirect(reverse('services'))
+
+    if Appointments.objects.filter(service=service).exists():
+        messages.warning(request, f"Sorry, {service.name} \
+                         has bookings attached. Please cancel \
+                         those before deleting the service.")
+        return redirect(reverse('services'))
+    else:
+        service.delete()
+        messages.success(request, f"Service: '{service.name}' has been deleted!")
+        
+        return redirect(reverse('services'))
+
 
 
 def addNewCategory(request):
