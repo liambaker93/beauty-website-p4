@@ -17,10 +17,10 @@ Checkout
     <div class="col-3">
                
         <div>{{ appointment.service.name }}</div>
-        <div>{{ appointment.service.price }}</div>
+        <div>£{{ appointment.service.price }}</div>
         <div>{{ appointment.appointment_time }}</div>
         <div>{{ appointment.appointment_date }}</div>
-        <div>{{ appointment.deposit_cost }}</div>
+        <div>£{{ appointment.deposit_cost }}</div>
     </div>
     <div class="col">
         <form id="payment-form" method="POST" action="{% url 'checkout_page' appointment.booking_id %}">

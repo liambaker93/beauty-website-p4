@@ -61,10 +61,16 @@ def addAppointment(request, service_id):
     deposit_cost = service.price / 2
     stripe_cost = int(deposit_cost)
 
-    booking_form = BookingForm()
+    initial_data = {
+        'service': service.name,
+        'user': request.user,
+        'deposit_cost': stripe_cost,
+    }
+
+    booking_form = BookingForm(initial=initial_data)
 
     if request.method == 'POST':
-        booking_form = BookingForm(request.POST)
+        booking_form = BookingForm(request.POST, initial=initial_data)
 
         if booking_form.is_valid():
             new_booking = booking_form.save(commit=False)

@@ -44,25 +44,5 @@ class Appointments(models.Model):
     def __str__(self):
         return f"{self.service.name} on {self.appointment_date} at\
         {self.appointment_time}"
-
-    def _calculate_deposit(self, full_price):
-        if full_price is None:
-            return 0
-        
-        deposit = round(full_price / 2)
-        return deposit
-    
-    def save(self, *args, **kwargs):
-        full_price = self.service.price
-
-        if not self.pk or (self.deposit_cost == 0) and full_price is not None:
-            self.deposit_cost = self._calculate_deposit(full_price)
-
-            self.final_cost = full_price - self.deposit_cost
-
-            if self.final_cost < 0:
-                self.final_cost = 0
-
-        super().save(*args, **kwargs)
         
 

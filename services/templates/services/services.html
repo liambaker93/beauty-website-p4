@@ -35,7 +35,7 @@ Services
 <div class="container card-container">
     <div class="row">
         {% for service in services %}
-        <div class="col-4 col-md-4 col-xs-12">
+        <div class="col-4 col-md-4 col-xs-12 d-flex">
             <div class="card mb-3" style="width: 20rem;">
                 <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}">
                     <div class="card-body">
@@ -43,11 +43,13 @@ Services
                         <h6 class="card-subtitle mb-2 text-body-secondary">£{{ service.price }} | {{ service.get_friendly_timeframe }}</h6>
                         <p class="card-text">{{ service.description }}</p>
                     </div>
-                    <div class="card-subtitle card-buttons">
-                    <a class="btn btn-primary" method="POST" href="{% url 'add_appointment' service.id %}">Book Now</a>
+                    <div class="card-subtitle booking-button">
+                    <a class="btn btn-primary" style="width: 100%;" method="POST" href="{% url 'add_appointment' service.id %}">Book Now</a>
+                    </div>
                     {% if user.is_staff %}
-                        <a class="btn btn-secondary" method="POST" href="{% url 'edit_service' service.id %}">Edit Service</a>
-                        <a class="btn btn-danger" href="{% url 'delete_service' service.id %}" onclick="return confirm('Are you sure you want to delete {{ service.name }}?')">Delete Service</a>
+                    <div class="card-subtitle" style="width: 100%;">
+                        <a class="btn btn-secondary user-buttons" method="POST" href="{% url 'edit_service' service.id %}">Edit Service</a>
+                        <a class="btn btn-danger user-buttons" href="{% url 'delete_service' service.id %}" onclick="return confirm('Are you sure you want to delete {{ service.name }}?')">Delete Service</a>
                     </div>
                     {% endif %}
             </div>           

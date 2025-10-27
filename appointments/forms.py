@@ -9,5 +9,5 @@ class BookingForm(forms.ModelForm):
     class Meta:
         model = Appointments
         fields = ('service', 'appointment_time', 'appointment_date',
-                  'deposit_cost', 'user_name', 'user_email',
+                  'user_name', 'user_email',
                   'user_phone')

@@ -1,9 +1,17 @@
 .booking-button {
-    background-color: earth-yellow;
+    display: block !important;
+    background-color: #EABE7C !important;
+    width: 100% !important;
 }
 
 .card-buttons {
-    display: flex;
+    display: list-item;
     gap: 2px;
     width: 100%;
+}
+
+.user-buttons {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
 }
