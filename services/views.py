@@ -1,5 +1,6 @@
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.contrib import messages
+from django.views import generic
 from django.db.models import Q
 from django.db.models.functions import Lower
 from .models import ServiceCategory, ServicesList
@@ -8,14 +9,13 @@ from .forms import ServiceForm, ServiceCategoryForm
 
 # Create your views here.
 
-
 def services(request):
     """
     A list of the services offered.
     Includes sorting and search queries
     """
     services = ServicesList.objects.all()
-    categories = None
+    categories = ServiceCategory.objects.all()
 
     query = None
     sort = None

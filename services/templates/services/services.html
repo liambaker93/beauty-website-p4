@@ -18,11 +18,14 @@ Services
                                 <option value="category_asc" {% if current_sorting  == 'category_asc' %}selected{% endif %}>Category (A-Z)</option>
                                 <option value="category_desc" {% if current_sorting  == 'category_desc' %}selected{% endif %}>Category (Z-A)</option>
                             </select>
+                            <select id="category-selector" class="custom-select custom-select-sm rounded-0 border border-{% if current_sorting != 'None_None' %}info{% else %}black{% endif %}" name="category">
+                                <option value="reset" {% if current_sorting  == 'None_None' %}selected{% endif %}>Pick Category...</option>
+                                {% for category in current_categories %}
+                                <option value="{{ category.name }}" {% if category.name  == '{{ category.name }}' %}selected{% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <a href="{% url 'services' %}" type="button">Reset Filter</a>
                         </div>
-                        <form method="GET" action="{% url 'services' %}">
-                        <input class="form-control" name="q" type="text" placeholder="Search...">
-                        <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-                        </form>
                     </div>
                         </div>
 
@@ -30,7 +33,7 @@ Services
 <div class="container">
     <div class="row">
         {% for service in services %}
-        <div class="col-4">
+        <div class="col-4 col-md-4 col-xs-12">
             <div class="card mb-5" style="width: 18rem;">
                 <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}">
                     <div class="card-body">
@@ -74,6 +77,23 @@ Services
 
                 window.location.replace(currentUrl);
             }
+        })
+
+        $('#category-selector').change(function() {
+            var selector = $(this);
+            var currentUrl = new URL(window.location);
+
+            var selectedVal = selector.val();
+            if(selectedVal && selectedVal != 'reset'){
+                currentUrl.searchParams.set("category", selectedVal);
+
+                window.location.replace(currentUrl);
+            } else {
+                currentUrl.searchParams.delete("sort");
+                currentUrl.searchParams.delete("direction");
+
+                window.location.replace(currentUrl);
+            };
         })
     </script>
 {% endblock %}
