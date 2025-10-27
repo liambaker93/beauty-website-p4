@@ -4,7 +4,7 @@
 Services
 {% endblock %}
 {% block content %}
-<div class="row text-center service-header">
+<div class="row text-center service-header mt-3">
     <div class="col">
         <h2>Check out my services!</h2>
     </div>
@@ -17,7 +17,7 @@ Services
 <div class="container">
     <div class="row">
         {% for service in services %}
-        <div class="col">
+        <div class="col-4">
             <div class="card" style="width: 18rem;">
                 <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}">
                     <div class="card-body">
@@ -25,15 +25,16 @@ Services
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{ service.price }}</h6>
                         <p class="card-text">{{ service.description }}</p>
                         <a class="btn btn-primary" method="POST" href="{% url 'add_appointment' service.id %}">Book Now</a>
-                        {% if user.is_staff %}
+                    </div>
+                    {% if user.is_staff %}
+                    <div class="card-subtitle">
                         <a class="btn btn-secondary" method="POST" href="{% url 'edit_service' service.id %}">Edit Service</a>
                         <a class="btn btn-danger" href="{% url 'delete_service' service.id %}">Delete Service</a>
                     </div>
-                </div>           
+                    {% endif %}
+            </div>           
         </div>
-        {% endif %}
         {% endfor %}
-
     </div>
 </div>
 
