@@ -111,8 +111,9 @@ def editService(request, service_id):
             return redirect(reverse('services'))
         else:
             messages.error
-            (request, "Failed to update service. "
-                "Please ensure the form is valid.")
+            (request, f"Failed to update service. \
+                Please ensure the form is valid.\
+                    {form.errors}")
     else:
         form = ServiceForm(instance=service)
         messages.info(request, f"You are editing {service.name}")

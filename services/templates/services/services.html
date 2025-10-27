@@ -8,28 +8,41 @@ Services
     <div class="col">
         <h2>Check out my services!</h2>
     </div>
-        {% if user.is_staff %}
-    <div class="col">
-        <a type="button" class="btn btn-primary" href="{% url 'add_new_service' %}">Add a new service</a>
-    </div>
-        {% endif %}
+                        <div class="row mt-1 mb-2">
+                    <div class="col-12 col-md-6 my-auto order-md-last d-flex justify-content-center justify-content-md-end">
+                        <div class="sort-select-wrapper w-50">
+                            <select id="sort-selector" class="custom-select custom-select-sm rounded-0 border border-{% if current_sorting != 'None_None' %}info{% else %}black{% endif %}">
+                                <option value="reset" {% if current_sorting  == 'None_None' %}selected{% endif %}>Sort by...</option>
+                                <option value="name_asc" {% if current_sorting  == 'name_asc' %}selected{% endif %}>Name (A-Z)</option>
+                                <option value="name_desc" {% if current_sorting  == 'name_desc' %}selected{% endif %}>Name (Z-A)</option>
+                                <option value="category_asc" {% if current_sorting  == 'category_asc' %}selected{% endif %}>Category (A-Z)</option>
+                                <option value="category_desc" {% if current_sorting  == 'category_desc' %}selected{% endif %}>Category (Z-A)</option>
+                            </select>
+                        </div>
+                        <form method="GET" action="{% url 'services' %}">
+                        <input class="form-control" name="q" type="text" placeholder="Search...">
+                        <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </form>
+                    </div>
+                        </div>
+
 </div>
 <div class="container">
     <div class="row">
         {% for service in services %}
         <div class="col-4">
-            <div class="card" style="width: 18rem;">
+            <div class="card mb-5" style="width: 18rem;">
                 <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}">
                     <div class="card-body">
-                        <h5 class="card-title">{{ service.name }}</h5>
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ service.price }}</h6>
+                        <h5 class="card-title">{{ service.name }} | {{ service.category }}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">£{{ service.price }} | {{ service.get_friendly_timeframe }}</h6>
                         <p class="card-text">{{ service.description }}</p>
                         <a class="btn btn-primary" method="POST" href="{% url 'add_appointment' service.id %}">Book Now</a>
                     </div>
                     {% if user.is_staff %}
                     <div class="card-subtitle">
                         <a class="btn btn-secondary" method="POST" href="{% url 'edit_service' service.id %}">Edit Service</a>
-                        <a class="btn btn-danger" href="{% url 'delete_service' service.id %}">Delete Service</a>
+                        <a class="btn btn-danger" href="{% url 'delete_service' service.id %}" onclick="return confirm('Are you sure you want to delete {{ service.name }}?')">Delete Service</a>
                     </div>
                     {% endif %}
             </div>           
@@ -38,4 +51,29 @@ Services
     </div>
 </div>
 
+{% endblock %}
+{% block postloadjs %}
+{{ block.super }}
+    <script type="text/javascript">
+        $('#sort-selector').change(function() {
+            var selector = $(this);
+            var currentUrl = new URL(window.location);
+
+            var selectedVal = selector.val();
+            if(selectedVal != 'reset'){
+                var sort = selectedVal.split("_")[0];
+                var direction = selectedVal.split("_")[1];
+
+                currentUrl.searchParams.set("sort", sort);
+                currentUrl.searchParams.set("direction", direction);
+
+                window.location.replace(currentUrl);
+            } else {
+                currentUrl.searchParams.delete("sort");
+                currentUrl.searchParams.delete("direction");
+
+                window.location.replace(currentUrl);
+            }
+        })
+    </script>
 {% endblock %}

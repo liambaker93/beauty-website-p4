@@ -33,7 +33,7 @@ Appointments
                 </div>
             </div>
             <a class="btn btn-secondary" href="{% url 'edit_appointment' booking.booking_id %}">Edit Appointment</a>
-            <a class="btn btn-danger" href="{% url 'delete_appointment' booking.booking_id %}">Delete Appointment</a>
+            <a class="btn btn-danger" href="{% url 'delete_appointment' booking.booking_id %}" onclick="return confirm('Are you sure you want to cancel your {{ booking.service.name }}? If you cancel, you will lose your deposit.')">Delete Appointment</a>
             {% endfor %}
     </div>
     </div>
