@@ -10,34 +10,25 @@
 /* CSS Colour variables, hexes provided by Coolors */
 
 :root {
-    --duck-green: #0B7A75;
-    --dark-red: #7B2D26;
+    --earth-yellow: #EABE7C;
+    --midnight-green: #07393C;
+    --eggplant: #74546A;
+    --china-rose: #B56576;
+    --silver-lake-blue: #6290C8;
 }
 
 /* Global Styles */
 
 body {
     font-family: var(--primary-font);
-    color: var(--dark-red);
+    color: var(--china-rose);
 }
 
 /* Nav Bar Styles */
 
-nav {
-    background-color: var(--duck-green) !important;
+.navbar-style {
+    background-color: var(--midnight-green) !important;
+    color: var(--eggplant) !important;
 }
 
-/* Index page styles */
 
-.home-box {
-    max-height: fit-content;
-    margin-bottom: 15px;
-}
-
-.service-header {
-    margin-top: 25px;
-}
-
-.new_service_form {
-    color: aqua;
-}
