@@ -4,23 +4,39 @@
 Account
 {% endblock %}
 {% block content %}
-<p>Welcome to the account page{% if user.is_authenticated %} {{ request.user.first_name }}{% else %}. 
+<div class="container">
+    <div class="row">
+<p>Welcome to 
+    {% if user.is_authenticated %}your {% else %}the{% endif %} 
+    account page{% if user.is_authenticated %} {{ request.user.first_name }}{% else %}. 
     Please <a href="{% url 'account_login' %}">log in</a> to create and view bookings.{% endif %}</p>
 {% if user.is_authenticated %}
 <div class="container">
     <div class="row">
-        <div class="col">
-            </div>
-    <div class="row">
-    <div class="col-8">
     {% for booking in appointments %}
-    <p>{{ booking.service.name }} at {{ booking.appointment_time }} on {{ booking.appointment_date }}</p>
+    <div class="col-6">
+    
+    <div class="card mb-5" style="width: 18rem;">
+                <img src="{{ booking.service.image.url }}" class="card-img-top" alt="{{ service.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ booking.service.name }}</h5>
+                        <p class="card-text">Date: {{ booking.appointment_date }}
+                            <br>
+                            Time: {{ booking.appointment_time }}
+                        </p>
+                    </div>
+            </div>    
+        
     </div>
+    {% endfor %}
             </div>
-            {% endfor %}
+
 {% endif %}
         </div>
     </div>
 </div>
+</div>
 
 {% endblock %}
+
+            

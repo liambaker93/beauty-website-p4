@@ -3,6 +3,7 @@ from appointments.models import Appointments
 
 # Create your views here.
 
+
 def index(request):
     """
     This view generates the orders made by a user ready to display on the account page.
