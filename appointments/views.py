@@ -120,7 +120,7 @@ def create_payment_intent(request, booking_id):
 
     stripe.api_key = settings.STRIPE_SECRET_KEY
     appointment = get_object_or_404(Appointments, pk=booking_id)
-    stripe_total = appointment.deposit_cost
+    stripe_total = int(appointment.deposit_cost * 100)
 
     MINIMUM_AMOUNT = 50
 
@@ -133,7 +133,9 @@ def create_payment_intent(request, booking_id):
         intent = stripe.PaymentIntent.create(
             amount=stripe_total,
             currency='gbp',
-            metadata={'booking_id': booking_id}
+            metadata={'booking_id': booking_id,
+                      'appointment_name': appointment.service.name,
+                      }
         )
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
@@ -156,7 +158,6 @@ def checkout_page(request, booking_id):
 
 def booking_confirmation(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
-
     payment_intent_id = request.GET.get('payment_intent')
 
     if not payment_intent_id:
@@ -169,9 +170,15 @@ def booking_confirmation(request):
             print("Payment")
             booking_id = intent.metadata.get('booking_id')
 
+            try:
+                booking = Appointments.objects.get(pk=booking_id)
+            except Appointments.DoesNotExist:
+                return render(request, 'appointments/appointments.html', {'message': 'Booking record not found.'})
+
             context = {
                 'intent': intent,
                 'booking_id': booking_id,
+                'booking': booking,
             }
 
             return render(request, 'appointments/booking_confirmed.html', context)
@@ -180,7 +187,7 @@ def booking_confirmation(request):
             return redirect('checkout_page', booking_id=intent.metadata.get('booking_id'))
         else:
             return render(request, 'appointments/appointments.html', {'intent': intent})
-    except stripe.error.StripeError as e:
+    except stripe.StripeError as e:
         return render(request, 'appointments/appointments.html', {'message': f"Stripe Error: {e.user_message}"})
 
 

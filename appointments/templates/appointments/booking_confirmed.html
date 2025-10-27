@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block extra_title %}
+{{ booking.service.name }} Booked!
+{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col">
-            <p>Thanks for payment! Your {{ service.name }} at {{ appointment.selected_time }} on {{ appointment.selected_date }} has been bookked!</p>
+            <p>Thanks for payment! Your {{ booking.service.name }} at {{ booking.appointment_time }} on {{ booking.appointment_date }} has been booked!</p>
+            <p>Your booking ID is {{ booking.pk }}</p>
         </div>
     </div>
 </div>
