@@ -1,18 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div>
+<div class="container">
+    <div class="row text-center">
     <h1>Add a new service</h1>
     <form method="POST" action="{% url 'add_new_category' %}" class="form mb-2" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <div>
-            <a class="btn btn-outline-black" href="{% url 'services' %}">Cancel</a>
-            <button class="btn btn-black" type="submit">Add Category</button>
+            <a class="btn btn-secondary" href="{% url 'services' %}">Cancel</a>
+            <button class="btn btn-primary" type="submit">Add Category</button>
+            <a class="btn btn-info" href="{% url 'add_new_service' %}">Need a new service?</a>
         </div>
     </form>
 </div>
+</div>
 <div>
-    <a class="btn" href="{% url 'add_new_service' %}">Need a new service?</a>
+    
 </div>
 {% endblock %}

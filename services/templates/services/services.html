@@ -10,6 +10,9 @@ Services
 <div class="row text-center service-header mt-3">
     <div class="col">
         <h2>Check out my services!</h2>
+        {% if request.user.is_staff %}
+        <a href="{% url 'add_new_service' %}" class="btn btn-primary" method="POST">Add a New Service</a>
+        {% endif %}
     </div>
     <div class="row mt-1 mb-2">
         <div class="col-12 col-md-6 my-auto order-md-last d-flex justify-content-md-end">
@@ -48,8 +51,8 @@ Services
                     </div>
                     {% if user.is_staff %}
                     <div class="card-subtitle mt-2 d-flex justify-content-around" style="width: 100%;">
-                        <button class="btn btn-secondary" method="POST" href="{% url 'edit_service' service.id %}">Edit Service</button>
-                        <button class="btn btn-danger" href="{% url 'delete_service' service.id %}" onclick="return confirm('Are you sure you want to delete {{ service.name }}?')">Delete Service</button>
+                        <a class="btn btn-secondary" method="POST" href="{% url 'edit_service' service.id %}">Edit Service</a>
+                        <a class="btn btn-danger" href="{% url 'delete_service' service.id %}" onclick="return confirm('Are you sure you want to delete {{ service.name }}?')">Delete Service</a>
                     </div>
                     {% endif %}
             </div>           
